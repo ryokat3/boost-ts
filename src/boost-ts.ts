@@ -9,9 +9,9 @@ type Mask = typeof Mask
 export type Length<T extends any[]> = T['length']
 
 export type Push<A, T extends Array<any>> = {
-    true: T
-    false: ((a: A, ...b: T) => void) extends ((...a: infer I) => void) ? I : []
-}[ A extends None ? "true" : "false" ]
+    nop: T
+    push: ((a: A, ...b: T) => void) extends ((...a: infer I) => void) ? I : []
+}[ A extends None ? "nop" : "push" ]
 
 export type Pop<T extends any[]> = Length<T> extends 0 ? [] : (((...b: T) => void) extends (a:any, ...b: infer I) => void ? I : [])
 
