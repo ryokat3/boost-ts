@@ -13,12 +13,12 @@ function sub (a:number, b:number):number {
 }
 
 // bind 2nd argument
-const sub10 = partial(sub, _1, 10)        # type :: (a:number)=>number
-console.log(sub10(100))                   # output is 90
+const sub10 = partial(sub, _1, 10)        // type :: (a:number)=>number
+console.log(sub10(100))                   // output is 90
 
 // swap 1st and 2nd argument
-const reverse_sub = partial(sub, _2, _1)  # type :: (a:number, b:number)=>number
-console.log(reverse_sub(10, 100))         # output is 90
+const reverse_sub = partial(sub, _2, _1)  // type :: (a:number, b:number)=>number
+console.log(reverse_sub(10, 100))         // output is 90
 ```
 
 
