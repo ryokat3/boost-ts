@@ -1,0 +1,34 @@
+{
+  "name": "boost-ts",
+  "version": "0.0.1",
+  "description": "TypeScript Library to boost functional programming",
+  "main": "boost-ts.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha --exit -r ts-node/register test/**/*.ts",
+    "clean": "shx rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wak109/boost-ts.git"
+  },
+  "keywords": [
+    "TypeScript",
+    "functional",
+    "library"
+  ],
+  "author": "wak109 <wak109@gmail.com> (https://github.com/wak109)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wak109/boost-ts/issues"
+  },
+  "homepage": "https://github.com/wak109/boost-ts#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "shx": "^0.3.2",
+    "ts-node": "^8.2.0"
+  }
+}
