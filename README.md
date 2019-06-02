@@ -1,12 +1,102 @@
 # boost-ts
 TypeScript Library to boost functional programming
 
-## Partial Function Call
+### Tuple Type Library
 
-With maximzing the advanced type of TypeScript, this library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
+#### Push
+
+Add a type to the head of type tuple.
 
 ```TypeScript
-import { partial, _1, _2 } from "boost-ts"
+// Target = [boolean, string, number]
+type Target = Push<boolean, [string, number]>
+```
+
+#### Pop
+
+Remove a type from the head of type tuple.
+
+```TypeScript
+// Target = [string, number]
+type Target = Pop<[boolean, string, number]>
+```
+
+#### Peek
+
+Get the head of type tuple.
+
+```TypeScript
+// Target = boolean
+type Target = Peek<[boolean, string, number]>
+```
+
+#### Reverse
+
+Reverse the order of type tuple.
+
+```TypeScript
+// Target = [number, string, boolean]
+type Target = Reverse<[boolean, string, number]>
+```
+
+#### Filter
+
+Filter a type from type tuple.
+
+```TypeScript
+// Target = [number, boolean]
+type Target = Filter<string, [boolean, string, number]>
+```
+
+#### Select
+
+Select a type from type tuple.
+
+```TypeScript
+// Target = [string, string]
+type Target = Filter<string, [boolean, string, number, string]>
+```
+
+#### Zip
+
+Zip two type tuples.
+
+```TypeScript
+// Target = [ [1, boolean], [2, string, [3, number] ]
+type Target = Zip<[1, 2, 3], [boolean, string, number]>
+```
+
+### Number Type Library
+
+### Decrease
+
+Decrease a number type.
+
+```TypeScript
+// Target = 3
+type Target = Decrease<4>
+```
+
+
+### Comp
+
+Compare two number types.
+
+```TypeScript
+// Target1 = -1
+type Target1 = Comp<1, 2>
+// Target2 = 0
+type Target2 = Comp<2, 2>
+// Target3 = 1
+type Target3 = Comp<2, 1>
+```
+
+### Partial Function Call
+
+This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
+
+```TypeScript
+import { partial, _1, _2 } from "boost-ts/lib/partial"
 
 function sub (a:number, b:number):number {
     return a - b

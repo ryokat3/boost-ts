@@ -1,5 +1,5 @@
 import * as chai from "chai"
-import { partial, _1, _2, _3, _4 } from "../src/boost-ts"
+import { partial, _1, _2, _3, _4 } from "../src/partial"
 
 
 describe("boost-ts", ()=>{
