@@ -1,13 +1,12 @@
 {
   "name": "boost-ts",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "TypeScript Library to boost functional programming",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
     "test": "mocha --exit -r ts-node/register test/**/*.ts",
-    "clean": "shx rm -rf lib",
-    "publish": "npm run clean && npm run build && npm publish"
+    "clean": "shx rm -rf lib"
   },
   "repository": {
     "type": "git",
