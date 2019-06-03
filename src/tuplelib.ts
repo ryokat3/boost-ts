@@ -3,8 +3,8 @@
  */ 
 declare const None: unique symbol
 type None = typeof None
-declare const Mask: unique symbol
-type Mask = typeof Mask
+declare const Pad: unique symbol
+type Pad = typeof Pad
 
 export type Length<T extends any[]> = T['length']
 
@@ -35,12 +35,12 @@ export type Select<T, Items extends any[], Result extends Array<any> = []> = {
 
 export type FilterMask<T, Items extends any[], Result extends Array<any> = []> = {
     done: Reverse<Result>
-    continue: FilterMask<T, Pop<Items>, Push<Peek<Items> extends T ? Mask : Peek<Items>, Result>>
+    continue: FilterMask<T, Pop<Items>, Push<Peek<Items> extends T ? Pad : Peek<Items>, Result>>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
 export type SelectMask<T, Items extends any[], Result extends Array<any> = []> = {
     done: Reverse<Result>
-    continue: SelectMask<T, Pop<Items>, Push<Peek<Items> extends T ? Peek<Items> : Mask, Result>>
+    continue: SelectMask<T, Pop<Items>, Push<Peek<Items> extends T ? Peek<Items> : Pad, Result>>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
 export type Zip<Items1 extends any[], Items2 extends any[], Result extends Array<any> = []> = {

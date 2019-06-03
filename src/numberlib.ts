@@ -1,4 +1,4 @@
-import { Length, Push, Pop } from "./TupleType"
+import { Length, Push, Pop } from "./tuplelib"
 
 
 type NumberToTuple<N extends number, Result extends Array<any> = []> = {

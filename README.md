@@ -21,13 +21,13 @@ Remove a type from the head of type tuple.
 type Target = Pop<[boolean, string, number]>
 ```
 
-#### Peek
+#### Head
 
 Get the head of type tuple.
 
 ```TypeScript
 // Target = boolean
-type Target = Peek<[boolean, string, number]>
+type Target = Head<[boolean, string, number]>
 ```
 
 #### Reverse
@@ -44,7 +44,7 @@ type Target = Reverse<[boolean, string, number]>
 Filter a type from type tuple.
 
 ```TypeScript
-// Target = [number, boolean]
+// Target = [boolean, number]
 type Target = Filter<string, [boolean, string, number]>
 ```
 
@@ -53,8 +53,8 @@ type Target = Filter<string, [boolean, string, number]>
 Select a type from type tuple.
 
 ```TypeScript
-// Target = [string, string]
-type Target = Filter<string, [boolean, string, number, string]>
+// Target = [string, number]
+type Target = Select<string|number, [boolean, string, number]>
 ```
 
 #### Zip

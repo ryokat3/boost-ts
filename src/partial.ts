@@ -1,4 +1,4 @@
-import { Top, Zip, Unzip, Select, SelectMask } from "./TupleType"
+import { Top, Zip, Unzip, Select, SelectMask } from "./tuplelib"
 
 /**
  * partial
@@ -10,10 +10,10 @@ export const _2 = Symbol("_2")
 export const _3 = Symbol("_3")
 export const _4 = Symbol("_4")
 
-export type _1 = typeof _1
-export type _2 = typeof _2
-export type _3 = typeof _3
-export type _4 = typeof _4
+type _1 = typeof _1
+type _2 = typeof _2
+type _3 = typeof _3
+type _4 = typeof _4
 
 type PH_TYPE = _1 | _2 | _3 | _4
 const PH_LIST = [ _1, _2, _3, _4 ]
