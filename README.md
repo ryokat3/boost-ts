@@ -1,9 +1,31 @@
 # boost-ts
 TypeScript Library to boost functional programming
 
-### Tuple Type Library
 
-#### Push
+## Partial Function Call
+
+This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
+
+```TypeScript
+import { partial, _1, _2 } from "boost-ts/lib/partial"
+
+function sub (a:number, b:number):number {
+    return a - b
+}
+
+// bind 2nd argument
+const sub10 = partial(sub, _1, 10)        // type :: (a:number)=>number
+console.log(sub10(100))                   // output is 90
+
+// swap 1st and 2nd argument
+const reverse_sub = partial(sub, _2, _1)  // type :: (a:number, b:number)=>number
+console.log(reverse_sub(10, 100))         // output is 90
+```
+
+
+## Tuple Type Library
+
+### Push
 
 Add a type to the head of type tuple.
 
@@ -12,7 +34,7 @@ Add a type to the head of type tuple.
 type Target = Push<boolean, [string, number]>
 ```
 
-#### Pop
+### Pop
 
 Remove a type from the head of type tuple.
 
@@ -21,7 +43,7 @@ Remove a type from the head of type tuple.
 type Target = Pop<[boolean, string, number]>
 ```
 
-#### Head
+### Head
 
 Get the head of type tuple.
 
@@ -30,7 +52,7 @@ Get the head of type tuple.
 type Target = Head<[boolean, string, number]>
 ```
 
-#### Reverse
+### Reverse
 
 Reverse the order of type tuple.
 
@@ -39,7 +61,7 @@ Reverse the order of type tuple.
 type Target = Reverse<[boolean, string, number]>
 ```
 
-#### Filter
+### Filter
 
 Filter a type from type tuple.
 
@@ -48,7 +70,7 @@ Filter a type from type tuple.
 type Target = Filter<string, [boolean, string, number]>
 ```
 
-#### Select
+### Select
 
 Select a type from type tuple.
 
@@ -57,7 +79,7 @@ Select a type from type tuple.
 type Target = Select<string|number, [boolean, string, number]>
 ```
 
-#### Zip
+### Zip
 
 Zip two type tuples.
 
@@ -66,7 +88,7 @@ Zip two type tuples.
 type Target = Zip<[1, 2, 3], [boolean, string, number]>
 ```
 
-### Number Type Library
+## Number Type Library
 
 ### Decrease
 
@@ -91,27 +113,12 @@ type Target2 = Comp<2, 2>
 type Target3 = Comp<2, 1>
 ```
 
-### Partial Function Call
 
-This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
-
-```TypeScript
-import { partial, _1, _2 } from "boost-ts/lib/partial"
-
-function sub (a:number, b:number):number {
-    return a - b
-}
-
-// bind 2nd argument
-const sub10 = partial(sub, _1, 10)        // type :: (a:number)=>number
-console.log(sub10(100))                   // output is 90
-
-// swap 1st and 2nd argument
-const reverse_sub = partial(sub, _2, _1)  // type :: (a:number, b:number)=>number
-console.log(reverse_sub(10, 100))         // output is 90
-```
 
 
 ------
 - Some code of this library is based on [this stackoverflow article](https://stackoverflow.com/questions/54607400/typescript-remove-entries-from-tuple-type).
 - The API of partial function is inspired by [Boost C++ library](https://www.boost.org/)
+- Thanks to the blog [Suppress Error of type level programming of TypeScript](https://kgtkr.net/blog/2019/04/15/typescript-typelevelprogramming-error-suppression/en).
+  This library will be nothing without workarounds suggested by this blog. [Japanese version](https://kgtkr.net/blog/2019/04/15/typescript-typelevelprogramming-error-suppression) is also published.
+- [typepark](https://www.npmjs.com/package/typepark) is an excellent library that provides the large collection of typescript types manipulation.
