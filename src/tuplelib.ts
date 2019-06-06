@@ -81,3 +81,8 @@ export type MapNonNullable<Items extends any[], Result extends Array<any> = []> 
     done: Reverse<Result>
     continue: MapNonNullable<Pop<Items>, Push<NonNullable<Head<Items>>, Result> extends infer X1 ? Cast<X1,any[]> : never>
 }[ Length<Items> extends 0  ? "done" : "continue"]
+
+export type ToUnion<Items extends any[], Result = never> = {
+    done: Result
+    continue: ToUnion<Pop<Items>, Result | Head<Items>>
+}[ Length<Items> extends 0  ? "done" : "continue"]
