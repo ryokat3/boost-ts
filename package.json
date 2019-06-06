@@ -1,6 +1,6 @@
 {
   "name": "boost-ts",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "TypeScript Library to boost functional programming",
   "main": "lib/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "keywords": [
     "typescript",
-    "functional-programming"    
+    "functional-programming"
   ],
   "author": "wak109 <wak109@gmail.com> (https://github.com/wak109)",
   "license": "MIT",
@@ -29,5 +29,6 @@
     "mocha": "^6.1.4",
     "shx": "^0.3.2",
     "ts-node": "^8.2.0"
-  }
+  },
+  "dependencies": {}
 }

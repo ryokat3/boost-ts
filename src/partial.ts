@@ -27,7 +27,6 @@ type ZipFuncPH<FuncArgs extends any[], Args extends any[]> = Zip<PHMaskArgs<Args
 type SelectedZipFuncPH<FuncArgs extends any[], Args extends any[]> = Select<[PH_TYPE, unknown], ZipFuncPH<FuncArgs, Args>> extends infer X3 ? Cast<X3,any[][]> : never
 type SortedZipFuncPH<FuncArgs extends any[], Args extends any[]> = SortZipByPH<SelectedZipFuncPH<FuncArgs, Args> extends infer X4 ? Cast<X4,any[][]> : never>
 
-
 export type PartialUnboundArgsType<FuncArgs extends any[], Args extends any[]> = Unzip2nd<SortedZipFuncPH<FuncArgs,Args> extends infer X5 ? Cast<X5,any[][]>: never> extends infer X6 ? Cast<X6, any[]> : never
 export type PartialArgsType<Func extends (...args:any[])=>any> = MapUnion<PH_TYPE, ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never> extends infer X2 ? Cast<X2, any[]> : never
 
@@ -39,9 +38,10 @@ export type PartialArgsType<Func extends (...args:any[])=>any> = MapUnion<PH_TYP
  * @param bindingArgs  binding args except place holders like _1, _2, _3 ...
  */
 export function partial<Func extends (...args:any[])=>any, ArgsType extends PartialArgsType<Func>>(func:Func, ...bindingArgs:ArgsType):(...unboundArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType>)=>ReturnType<Func> {
-    return function (...unboundArgs:any[]) {    
-        return func.call(func, ...unboundArgs.reduce((result:any[], arg:any, idx:number)=>result.map((x:any)=>(x === PH_LIST[idx] ? arg : x)), bindingArgs)) as ReturnType<Func>
-     }    
+    return function<UnboundArgs extends PartialUnboundArgsType<ArgumentsType<Func>, ArgsType>> (...unboundArgs:UnboundArgs):ReturnType<Func> {
+        const args:any[] = unboundArgs    
+        return func.call(func, ...args.reduce((result:any[], arg:any, idx:number)=>result.map((x:any)=>(x === PH_LIST[idx] ? arg : x)), bindingArgs))
+    }    
 }
 
 
