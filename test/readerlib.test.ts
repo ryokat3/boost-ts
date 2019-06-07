@@ -1,5 +1,6 @@
 import * as chai from "chai"
-import { readerable, TupledArgsType } from "../src/readerlib"
+import { readerable } from "../src/readerlib"
+import { Cast } from "../src/tuplelib"
 import { _1, _2, _3, _4, _X1, _X2, _X3, _X4 } from "../src/partial"
 import { Reader } from "fp-ts/lib/Reader"
 
@@ -65,4 +66,5 @@ describe("readerlib", ()=>{
             .run([5, "end"])
         chai.assert.equal(result, "5, 5, 5, end, 5, 5, start")
     })
+
 })

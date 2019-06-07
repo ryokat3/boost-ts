@@ -3,7 +3,7 @@ import { ArgumentsType } from "./functionlib"
 import { Length } from "./tuplelib"
 import { Comp } from "./numberlib"
 
-type GetArgsTupledType<Func extends (...args:any[])=>any> = {
+export type GetArgsTupledType<Func extends (...args:any[])=>any> = {
     nop: Func
     tupled: (arg:ArgumentsType<Func>)=>ReturnType<Func>
 } [ Comp<Length<ArgumentsType<Func>>, 2> extends -1 ? "nop" : "tupled"]
