@@ -1,6 +1,6 @@
 {
   "name": "boost-ts",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "TypeScript Library to boost functional programming",
   "main": "lib/index.js",
   "scripts": {

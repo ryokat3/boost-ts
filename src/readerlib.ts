@@ -1,6 +1,6 @@
-import { partial, PartialBindingType, PartialUnboundType, getNumberOfPlaceHolder , _1, _2, _3, _4 } from "./partial"
+import { partial, getNumberOfPlaceHolder, PHArg, UnboundArgs, _1, _2, _3, _4 } from "./partial"
 import { ArgumentsType } from "./functionlib"
-import { Length } from "./tuplelib"
+import { Length, Cast } from "./tuplelib"
 import { Comp } from "./numberlib"
 
 export type GetArgsTupledType<Func extends (...args:any[])=>any> = {
@@ -24,7 +24,21 @@ export type TupledArgsType<Args extends any[]> = {
     tupled: Args
 } [ Comp<Length<Args>, 2> extends -1 ? "nop" : "tupled"]
 
+type DespreadFuncType<Args extends any[], R> = {
+    0: ()=>R
+    1: (arg:Args[0])=>R
+    2: (args:Args)=>R
+} [ Length<Args> extends 0 ? 0 : Length<Args> extends 1 ? 1 : 2 ]
+
+
+
+type ReaderableFuncType<Func extends (...args:any[])=>any, Args extends any[]> = DespreadFuncType<UnboundArgs<Func, Args>, ReturnType<Func>>
+export type ReaderEnvType<Func extends (...args:any[])=>any, Args extends any[]> = TupledArgsType<UnboundArgs<Func, Args>>
+
+
+
 /**
+ * 
  * Partial function call convenient for Reader monad, create (e:E)=>A
  * 
  * If signle arguments is unbound, then it is used as-is for E
@@ -33,8 +47,38 @@ export type TupledArgsType<Args extends any[]> = {
  * @param func         function chained as Reader monad
  * @param bindingArgs  binding args except place holders like _1, _2, _3 ...
  */
-export function readerable<Func extends (...args:any[])=>any, ArgsType extends PartialBindingType<Func>>(func:Func, ...bindingArgs:ArgsType):GetArgsTupledType<(...unboundArgs:PartialUnboundType<Func, ArgsType>)=>ReturnType<Func>> {
-//export function readerify<Func extends (...args:any[])=>any, ArgsType extends PartialBindingType<Func>>(func:Func, ...bindingArgs:ArgsType) {    
-    const boundFunc = partial(func, ...bindingArgs)
-    return getArgsTupled(boundFunc, getNumberOfPlaceHolder(bindingArgs) >= 2)
+export function readerable<Func extends (...args:any[])=>any>
+    (func:Func):ReaderableFuncType<Func,[]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>>
+    (func:Func, a1:A1):ReaderableFuncType<Func,[A1]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>>
+    (func:Func, a1:A1, a2:A2):ReaderableFuncType<Func,[A1,A2]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>>
+    (func:Func, a1:A1, a2:A2, a3:A3):ReaderableFuncType<Func,[A1,A2,A3]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4):ReaderableFuncType<Func,[A1,A2,A3,A4]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5):ReaderableFuncType<Func,[A1,A2,A3,A4,A5]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6):ReaderableFuncType<Func,[A1,A2,A3,A4,A5,A6]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>, A7 extends PHArg<Func,6>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7):ReaderableFuncType<Func,[A1,A2,A3,A4,A5,A6,A7]>
+export function readerable<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>, A7 extends PHArg<Func,6>, A8 extends PHArg<Func,7>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7, a8:A8):ReaderableFuncType<Func,[A1,A2,A3,A4,A5,A6,A7,A8]>
+
+export function readerable<Func extends (...args:any[])=>any>(func:Func, ...args:any[]):(a:any)=>ReturnType<Func>
+export function readerable<Func extends (...args:any[])=>any>(func:Func, ...args:any[]):(a:any)=>ReturnType<Func> {    
+    return getArgsTupled(partial(func, ...args), getNumberOfPlaceHolder(args) >= 2)
 }

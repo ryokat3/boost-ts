@@ -1,4 +1,3 @@
-import { Decrease } from "./numberlib"
 /**
  *  Tuple
  */ 
@@ -19,6 +18,8 @@ export type Push<A, T extends Array<any>> = {
 export type Pop<T extends any[]> = Length<T> extends 0 ? [] : (((...b: T) => void) extends (a:any, ...b: infer I) => void ? I : [])
 
 export type Head<T extends any[]> = Length<T> extends 0 ? None : T[0]
+
+export type Element<T extends any[], I extends number> = Length<T> extends 0 ? None : T[I]
 
 
 export type Reverse<Items extends any[], Result extends Array<any> = []> = {

@@ -1,6 +1,6 @@
-import { Length, Top, Zip, Unzip2nd, Select, SelectMask, MapUnion, Cast, ToUnion } from "./tuplelib"
-import { ArgumentsType, pipe, despread } from "./functionlib"
-import { Comp } from "./numberlib"
+import { Top, Zip, Unzip2nd, Select, SelectMask, MapUnion, Cast, ToUnion } from "./tuplelib"
+import { ArgumentsType } from "./functionlib"
+
 
 /**
  * partial
@@ -39,9 +39,13 @@ export type PartialBindingType<Func extends (...args:any[])=>any> = PartialBindi
 export type PartialUnboundType<Func extends (...args:any[])=>any, ArgsType extends PartialBindingArgsType<Func, PH_UNION>> = PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>
 
 
+export type UnboundArgs<Func extends (...args:any[])=>any, Args extends any[]> = PartialUnboundArgsType<ArgumentsType<Func>, Args, PH_LIST>
+
 export function getNumberOfPlaceHolder(args:any[]):number {
     return args.reduce((acc:number, curr:any)=>(PH_LIST.indexOf(curr) >= 0) ? acc + 1 : acc, 0)
 }
+
+export type PHArg<Func extends (...args:any[])=>any, N extends number> = ArgumentsType<Func>[N] | PH_UNION
 
 /**
  * Partial function call
@@ -50,8 +54,41 @@ export function getNumberOfPlaceHolder(args:any[]):number {
  * @param func         function
  * @param bindingArgs  binding args except place holders like _1, _2, _3 ...
  */
-export function partial<Func extends (...args:any[])=>any, ArgsType extends PartialBindingArgsType<Func,PH_UNION>>(func:Func, ...bindingArgs:ArgsType):(...unboundArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {
-    return function<UnboundArgs extends PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>> (...unboundArgs:UnboundArgs):ReturnType<Func> {
+export function partial<Func extends (...args:any[])=>any>
+    (func:Func):(...args:UnboundArgs<Func,[]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>>
+    (func:Func, a1:A1):(...args:UnboundArgs<Func,[A1]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>>
+    (func:Func, a1:A1, a2:A2):(...args:UnboundArgs<Func,[A1,A2]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>>
+    (func:Func, a1:A1, a2:A2, a3:A3):(...args:UnboundArgs<Func,[A1,A2,A3]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4):(...args:UnboundArgs<Func,[A1,A2,A3,A4]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5,A6]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>, A7 extends PHArg<Func,6>>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5,A6,A7]>)=>ReturnType<Func>
+export function partial<Func extends (...args:any[])=>any,
+    A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
+    A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>, A7 extends PHArg<Func,6>, A8 extends PHArg<Func,7> >
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7, a8:A8):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5,A6,A7,A8]>)=>ReturnType<Func>
+
+
+export function partial <Func extends (...args:any[])=>any>(func:Func, ...bindingArgs:any[]):(...unboundArgs:any[])=>ReturnType<Func>    
+export function partial<Func extends (...args:any[])=>any>(func:Func, ...bindingArgs:any[]):(...unboundArgs:any[])=>ReturnType<Func> {
+    return function (...unboundArgs:any[]):ReturnType<Func> {
         const args:any[] = unboundArgs    
         return func.call(func, ...args.reduce((result:any[], arg:any, idx:number)=>result.map((x:any)=>(x === PH_LIST[idx] ? arg : x)), bindingArgs))
     }    
@@ -84,60 +121,3 @@ export function partialX<Func extends (...args:any[])=>any, ArgsType extends Par
         }
     }
 }
-
-/*
-type GetArgsTupledType<Func extends (...args:any[])=>any> = {
-    nop: Func
-    tupled: (arg:ArgumentsType<Func>)=>ReturnType<Func>
-} [ Comp<Length<ArgumentsType<Func>>, 2> extends -1 ? "nop" : "tupled"]
-
-function getArgsTupled<Func extends (...args:any[])=>any>(func:Func, tupled:boolean):GetArgsTupledType<Func> {
-    return ((args:any)=> {
-        if (tupled) {
-            return func.call(func, ...args)
-        }
-        else {
-            return func.call(func, args)
-        }
-    }) as GetArgsTupledType<Func>
-}
-
-function countPH(args:any[]):number {
-    return args.reduce((acc:number, curr:any)=>(PH_LIST.indexOf(curr) >= 0) ? acc + 1 : acc, 0)
-}
-
-type ReaderifiedFuncType<Func extends (...args:any[])=>any, PhList extends any[], ArgsType extends PartialArgsType<Func, ToUnion<PhList>>> = GetArgsTupledType<(...unboundArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PhList>)=>ReturnType<Func>>
-*/
-/**
- * Partial function call convenient for Reader monad, create (e:E)=>A
- * 
- * If signle arguments is unbound, then it is used as-is for E
- * If multiple arguments are unbound, then they are packed in a tuple [E1, E2] for E
- * 
- * @param func         function chained as Reader monad
- * @param bindingArgs  binding args except place holders like _1, _2, _3 ...
- */
-/*
-export function readerify<Func extends (...args:any[])=>any, ArgsType extends PartialArgsType<Func, PH_UNION>>(func:Func, ...bindingArgs:ArgsType):ReaderifiedFuncType<Func, PH_LIST, ArgsType> {
-    const boundFunc = partial(func, ...bindingArgs)
-    return getArgsTupled(boundFunc, countPH(bindingArgs) >= 2)
-}
-
-
-type ReaderChainifiedFuncType<Func extends (...args1:any[])=>any, ArgsType extends PartialArgsType<Func, PH_UNION|XPH_UNION>> = (...args2:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>)=>GetArgsTupledType<(...args3:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func>>
-
-function readerChainify<Func extends (...args:any[])=>any, ArgsType extends PartialArgsType<Func, PH_UNION|XPH_UNION>>(func:Func, ...bindingArgs:ArgsType):ReaderChainifiedFuncType<Func, ArgsType> {
-    return function (...outerArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>):GetArgsTupledType<(...innerArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func>> {
-        return function (tupledArgs:any):ReturnType<Func> {
-            const args1:any[] = outerArgs
-            const xargs = args1.reduce((result:any[], arg:any, idx:number)=>result.map((x:any)=>(x === XPH_LIST[idx] ? arg : x)), bindingArgs)
-            const args2:any[] = (countPH(bindingArgs) >= 2) ? tupledArgs : [ tupledArgs ]
-            return func.call(func, ...args2.reduce((result:any[], arg:any, idx:number)=>result.map((x:any)=>(x === PH_LIST[idx] ? arg : x)), xargs))                        
-        }        
-    }
-}
-
-const hehe = (a:number, b:string, c:boolean, d:string, e:number) =>  `${a} - ${b} - ${c} - ${d} - ${e}`
-const hehe1 = pipe(partialX(hehe, _2, _X2, true, _1, _X1), despread)
-console.log(hehe1(5, "hello")(["not", 3]))
-*/

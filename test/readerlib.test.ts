@@ -1,9 +1,7 @@
 import * as chai from "chai"
-import { readerable } from "../src/readerlib"
-import { Cast } from "../src/tuplelib"
+import { readerable, ReaderEnvType } from "../src/readerlib"
 import { _1, _2, _3, _4, _X1, _X2, _X3, _X4 } from "../src/partial"
 import { Reader } from "fp-ts/lib/Reader"
-
 
 
 const test = (x:number, y:string)=> `${x}, ${y}`
@@ -11,7 +9,18 @@ const test2 = (x:number, y:string, z:string)=> `${x}, ${y}, ${z}`
 const newReader = <E,A>(run:(e:E)=>A)=>{ return new Reader(run) }
 
 
+
 describe("readerlib", ()=>{
+
+    it ("readerable arg#0", ()=>{
+        const func = readerable(()=>5)    
+        chai.assert.equal(func(), 5)
+    })
+
+    it ("readerable arg#1", ()=>{
+        const func = readerable((a:number)=>a, _1)        
+        chai.assert.equal(func(6), 6)
+    })
 
     it("readerable basic", ()=>{        
         const func = readerable(test, _1, "hello")
@@ -65,6 +74,5 @@ describe("readerlib", ()=>{
                 .chain((x:string)=>newReader(readerable(test, _1, x))).local(pickNum))
             .run([5, "end"])
         chai.assert.equal(result, "5, 5, 5, end, 5, 5, start")
-    })
-
+    })    
 })
