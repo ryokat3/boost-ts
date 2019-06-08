@@ -19,10 +19,12 @@ function getArgsTupled<Func extends (...args:any[])=>any>(func:Func, tupled:bool
     }) as GetArgsTupledType<Func>
 }
 
+
 export type TupledArgsType<Args extends any[]> = {
     nop: Args[0]
     tupled: Args
 } [ Comp<Length<Args>, 2> extends -1 ? "nop" : "tupled"]
+
 
 type DespreadFuncType<Args extends any[], R> = {
     0: ()=>R
@@ -33,8 +35,8 @@ type DespreadFuncType<Args extends any[], R> = {
 
 
 type ReaderableFuncType<Func extends (...args:any[])=>any, Args extends any[]> = DespreadFuncType<UnboundArgs<Func, Args>, ReturnType<Func>>
-export type ReaderEnvType<Func extends (...args:any[])=>any, Args extends any[]> = TupledArgsType<UnboundArgs<Func, Args>>
 
+export type ReaderEnvType<Func extends (...args:any[])=>any, Args extends any[]> = TupledArgsType<UnboundArgs<Func, Args> extends infer T1 ? Cast<T1,any[]> : never>
 
 
 /**

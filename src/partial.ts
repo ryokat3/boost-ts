@@ -24,22 +24,86 @@ const PH_LIST = [ _1, _2, _3, _4 ]
 type PH_UNION = ToUnion<PH_LIST>
 type XPH_UNION = ToUnion<XPH_LIST>
 
-type SortZipByPH<Items extends any[][], PhList extends any[]> = Top<[PhList[0], unknown], Top<[PhList[1], unknown], Top<[PhList[2], unknown], Top<[PhList[3], unknown], Items> extends infer X4 ? Cast<X4,any[][]> : never> extends infer X3 ? Cast<X3,any[][]> : never> extends infer X2 ? Cast<X2,any[][]> : never>
+type SortZipByPH<Items extends [any,any][], PhList extends any[]> = Top<[PhList[0], unknown],Top<[PhList[1], unknown],Top<[PhList[2], unknown], Top<[PhList[3], unknown], Items> extends infer X4 ? Cast<X4,[any,any][]> : never> extends infer X3 ? Cast<X3,[any,any][]> : never> extends infer X2 ? Cast<X2,[any,any][]> : never>
 
 type SelectMaskArgs<Args extends any[], PhUnion> = SelectMask<PhUnion, Args> extends infer X1 ? Cast<X1,any[]> : never
-type ZipFuncArgs<FuncArgs extends any[], Args extends any[], PhUnion> = Zip<SelectMaskArgs<Args, PhUnion>, FuncArgs> extends infer X2 ? Cast<X2,any[][]> : never
-type SelectedZipFuncPH<FuncArgs extends any[], Args extends any[], PhUnion> = Select<[PhUnion, unknown], ZipFuncArgs<FuncArgs, Args, PhUnion>> extends infer X3 ? Cast<X3,any[][]> : never
-type SortedZipFuncPH<FuncArgs extends any[], Args extends any[], PhList extends any[]> = SortZipByPH<SelectedZipFuncPH<FuncArgs, Args, ToUnion<PhList>> extends infer X4 ? Cast<X4,any[][]> : never, PhList>
 
-type PartialUnboundArgsType<FuncArgs extends any[], Args extends any[], PhList extends any[]> = Unzip2nd<SortedZipFuncPH<FuncArgs,Args, PhList> extends infer X5 ? Cast<X5,any[][]>: never> extends infer X6 ? Cast<X6, any[]> : never
-type PartialBindingArgsType<Func extends (...args:any[])=>any, PhUnion> = MapUnion<PhUnion, ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never> extends infer X2 ? Cast<X2, any[]> : never
 
+type ZipFuncArgs<FuncArgs extends any[], Args extends any[], PhUnion> =
+    Zip<
+        SelectMaskArgs<
+            Args,
+            PhUnion
+        >,
+        FuncArgs
+    > extends infer X2 ? Cast<X2,[any,any][]> : never
+
+
+type SelectedZipFuncPH<FuncArgs extends any[], Args extends any[], PhUnion> =
+    Select<
+        [PhUnion, unknown],
+        ZipFuncArgs<
+            FuncArgs, Args, PhUnion
+        >
+    > extends infer X3 ? Cast<X3,[any,any][]> : never
+
+
+type SortedZipFuncPH<FuncArgs extends any[], Args extends any[], PhList extends any[]> =
+    SortZipByPH<
+        SelectedZipFuncPH<
+            FuncArgs,
+            Args,
+            ToUnion<PhList>
+        > extends infer X4 ? Cast<X4,[any,any][]> : never,
+        PhList
+    >  
+
+type PartialUnboundArgsType<FuncArgs extends any[], Args extends any[], PhList extends any[]> =
+    Unzip2nd<
+        SortedZipFuncPH<
+            FuncArgs,Args,PhList
+        > extends infer X5 ? Cast<X5,[any,any][]>: never
+    > extends infer X6 ? Cast<X6, any[]> : never
+
+
+type PartialBindingArgsType<Func extends (...args:any[])=>any, PhUnion> =
+    MapUnion<
+        PhUnion,
+        ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never
+    > extends infer X2 ? Cast<X2, any[]> : never
 
 export type PartialBindingType<Func extends (...args:any[])=>any> = PartialBindingArgsType<Func, PH_UNION>
-export type PartialUnboundType<Func extends (...args:any[])=>any, ArgsType extends PartialBindingArgsType<Func, PH_UNION>> = PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>
 
 
-export type UnboundArgs<Func extends (...args:any[])=>any, Args extends any[]> = PartialUnboundArgsType<ArgumentsType<Func>, Args, PH_LIST>
+export type UnboundArgs<Func extends (...args:any[])=>any, Args extends any[]> =
+    PartialUnboundArgsType<
+        ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never,
+        Args,
+        PH_LIST
+    > extends infer X2 ? Cast<X2, any[]> : never
+
+// Optimised version
+/*
+export type UnboundArgs<Func extends (...args:any[])=>any, Args extends any[]> =
+    Unzip2nd<
+        SortZipByPH<
+            Select<
+                [PH_UNION, unknown],
+                Zip<
+                    SelectMask<PH_UNION, Args> extends infer X4 ? Cast<X4,any[]> : never,
+                    ArgumentsType<Func> extends infer X1 ? Cast<X1,any[]> : never
+                > extends infer X2 ? Cast<X2,[any,any][]> : never
+            > extends infer X3 ? Cast<X3,[any,any][]> : never,
+            PH_LIST
+        > extends infer X5 ? Cast<X5,[any,any][]> : never
+    > extends infer X6 ? Cast<X6,any[]> : never
+*/
+
+// SortedZipFuncPH<ArgumentsType<Func>, Args, PH_LIST> extends infer X5 ? Cast<X5,any[][]>: never> extends infer X6 ? Cast<X6, any[]> : never 
+
+// type SortedZipFuncPH<FuncArgs extends any[], Args extends any[], PhList extends any[]> = SortZipByPH<SelectedZipFuncPH<FuncArgs, Args, ToUnion<PhList>> extends infer X4 ? Cast<X4,any[][]> : never, PhList>
+
+
 
 export function getNumberOfPlaceHolder(args:any[]):number {
     return args.reduce((acc:number, curr:any)=>(PH_LIST.indexOf(curr) >= 0) ? acc + 1 : acc, 0)
@@ -93,8 +157,6 @@ export function partial<Func extends (...args:any[])=>any>(func:Func, ...binding
         return func.call(func, ...args.reduce((result:any[], arg:any, idx:number)=>result.map((x:any)=>(x === PH_LIST[idx] ? arg : x)), bindingArgs))
     }    
 }
-
-
 
 
 export const _X1 = Symbol("_X1")

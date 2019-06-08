@@ -1,5 +1,6 @@
 import * as chai from "chai"
-import { partial, partialX, _1, _2, _3, _4, _X1, _X2, _X3, _X4 } from "../src/partial"
+import { partial, _1, _2, _3, _4 } from "../src/partial"
+import { partialX, _X1, _X2, _X3, _X4 } from "../src/partial"
 
 
 describe("boost-ts", ()=>{
