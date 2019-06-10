@@ -4,7 +4,6 @@ import { readerable, ReaderEnvType } from "../src/readerlib"
 import { Reader } from "fp-ts/lib/Reader"
 
 
-// @ts-ignore
 export function readerify<Func extends (...args:any[])=>any>
     (func:Func):Reader<ReaderEnvType<Func,[]>,ReturnType<Func>>    
 export function readerify<Func extends (...args:any[])=>any,
