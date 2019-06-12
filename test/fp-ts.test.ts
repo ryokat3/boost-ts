@@ -1,9 +1,10 @@
 import * as chai from "chai"
-import { _1, _2, _3, _4, PHArg } from "../src/partial"
+import { _1, _2, _3, _4 } from "../src/partial"
 import { readerable, ReaderEnvType } from "../src/readerlib"
 import { Reader } from "fp-ts/lib/Reader"
 
 
+/*
 export function readerify<Func extends (...args:any[])=>any>
     (func:Func):Reader<ReaderEnvType<Func,[]>,ReturnType<Func>>    
 export function readerify<Func extends (...args:any[])=>any,
@@ -40,10 +41,14 @@ export function readerify<Func extends (...args:any[])=>any,
 
 export function readerify(func:(...args:unknown[])=>unknown, ...args:unknown[]):Reader<unknown, unknown>
 export function readerify(func:(...args:any[])=>any, ...args:any[]):Reader<any, any> {
+*/
+
+export function readerify<Func extends (...args:any[])=>any, Args extends any[]>(func:Func, ...args:Args):Reader<ReaderEnvType<Func, Args>,ReturnType<Func>> {
     return new Reader(readerable(func, ...args))
 }
 
-const test = (x:number, y:string)=> `${x}, ${y}`
+const test = (x:number, y:string):string=> `${x}, ${y}`
+
 
 describe("fp-ts", ()=>{
     it("readerable getReader", ()=>{
@@ -52,5 +57,5 @@ describe("fp-ts", ()=>{
 
         chai.assert.equal(re.run(8), "8, start")
 
-    })
+    }) 
 })
