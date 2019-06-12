@@ -2,6 +2,8 @@ import { MapNonNullable, Cast } from "./tuplelib"
 
 export type ArgumentsType<Func extends (...args:any[])=>any> = Func extends (...args: infer Args)=>ReturnType<Func> ? Cast<Args, any[]> : never
 
+export type ReturnValueType<T> = T extends (...args:any[])=>infer R ? R extends Promise<infer V> ? V : R : never
+
 export type NonNullableFunction<Func extends (...args:any[])=>any> = (...args:MapNonNullable<ArgumentsType<Func>> extends infer X2 ? Cast<X2,any[]> : never)=>ReturnType<Func>
 
 export function despread<Func extends (...args:any[])=>any>(func:Func):(tupledArgs:ArgumentsType<Func>)=>ReturnType<Func> {

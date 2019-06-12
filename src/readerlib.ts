@@ -38,6 +38,17 @@ type ReaderableFuncType<Func extends (...args:any[])=>any, Args extends any[]> =
 
 export type ReaderEnvType<Func extends (...args:any[])=>any, Args extends any[]> = TupledArgsType<UnboundArgs<Func, Args> extends infer T1 ? Cast<T1,any[]> : never>
 
+export type OverallEnv<Items extends any[]> = {
+    0: []
+    1: Items extends [ infer A ] ? [ A ] : never
+    2: Items extends [ infer A, infer B ] ? [ A, B ] | [A] : never
+    3: Items extends [ infer A, infer B, infer C ] ? [ A, B, C]  | [ A, B ] | [A] : never
+    4: Items extends [ infer A, infer B, infer C, infer D ] ? [ A, B, C, D ] | [ A, B, C ] | [ A, B ] | [A] : never
+    5: Items extends [ infer A, infer B, infer C, infer D, infer E ] ? [ A, B, C, D, E ] | [ A, B, C, D ] | [ A, B, C ] | [ A, B ] | [A] : never
+    6: Items extends [ infer A, infer B, infer C, infer D, infer E, infer F ] ? [ A, B, C, D, E, F ] | [ A, B, C, D, E ] | [ A, B, C, D ] | [ A, B, C ] | [ A, B ] | [A] : never
+    7: Items extends [ infer A, infer B, infer C, infer D, infer E, infer F, infer G ] ? [ A, B, C, D, E, F, G ]  | [ A, B, C, D, E, F ] | [ A, B, C, D, E ] | [ A, B, C, D ] | [ A, B, C ] | [ A, B ] | [A] : never
+    8: Items extends [ infer A, infer B, infer C, infer D, infer E, infer F, infer G, infer H ] ? [ A, B, C, D, E, F, G, H  ] | [ A, B, C, D, E, F, G ]  | [ A, B, C, D, E, F ] | [ A, B, C, D, E ] | [ A, B, C, D ] | [ A, B, C ] | [ A, B ] | [A] : never
+}[ Items['length'] extends 0|1|2|3|4|5|6|7|8  ? Items['length'] : never ]
 
 /**
  * 

@@ -72,7 +72,7 @@ type PartialBindingArgsType<Func extends (...args:any[])=>any, PhUnion> =
         ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never
     > extends infer X2 ? Cast<X2, any[]> : never
 
-export type PartialBindingType<Func extends (...args:any[])=>any> = PartialBindingArgsType<Func, PH_UNION>
+export type PartialBindingType<Func extends (...args:any[])=>any> = PartialBindingArgsType<Func, PH_UNION> extends infer X1 ? Cast<X1,any[]> : never
 
 
 export type UnboundArgs<Func extends (...args:any[])=>any, Args extends any[]> =
