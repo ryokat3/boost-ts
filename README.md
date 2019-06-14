@@ -2,6 +2,26 @@
 TypeScript Library to boost functional programming
 
 
+## Support Library for Reader Monad
+
+Convert a function in (e:Env)=>A format for Reader monad (e.g. fp-ts).
+Just use `_1`, `_2`, ... and `_8` to create Env type.
+
+
+```TypeScript
+// Define environment type for Reader moand    
+type EnvType = { 1:number, 2:string }
+
+// Chaining Reader monad w/o cordinating environment type
+const task = ask<ReaderifyRunType<EnvType>, string>()
+                .chain(()=>readerifyTryCatch(atest, _1, "start"))   // env: 'number'
+                .chain(()=>readerifyTryCatch(atest, _1, _2))        // env: 'number', 'string'
+                .chain(()=>readerifyTryCatch(atest, 10, _2))        // env: 'string'
+    
+const result = await task.run(readerifyRunArgs({1:8, 2:"hello"}))
+```
+
+
 ## Partial Function Call
 
 This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
@@ -24,6 +44,11 @@ console.log(reverse_sub(10, 100))         // output is 90
 
 
 ## Tuple Type Library
+
+This library for tuple type operation eliminates recursive calls as much as possible.
+It is because recursive calls for type operation sometimes trigger errors when initiating types.
+So it's safe to this library to avoid annoying type initiation errors.
+
 
 ### Push
 
@@ -63,7 +88,7 @@ type Target = Reverse<[boolean, string, number]>
 
 ### Filter
 
-Filter a type from type tuple.
+Filter a type from type tuple (incl. recursive call)
 
 ```TypeScript
 // Target = [boolean, number]
@@ -72,7 +97,7 @@ type Target = Filter<string, [boolean, string, number]>
 
 ### Select
 
-Select a type from type tuple.
+Select a type from type tuple (incl. recursive call)
 
 ```TypeScript
 // Target = [string, number]

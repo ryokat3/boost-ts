@@ -11,14 +11,22 @@ export const _1 = Symbol("_1")
 export const _2 = Symbol("_2")
 export const _3 = Symbol("_3")
 export const _4 = Symbol("_4")
+export const _5 = Symbol("_5")
+export const _6 = Symbol("_6")
+export const _7 = Symbol("_7")
+export const _8 = Symbol("_8")
 
-type _1 = typeof _1
-type _2 = typeof _2
-type _3 = typeof _3
-type _4 = typeof _4
+export type _1 = typeof _1
+export type _2 = typeof _2
+export type _3 = typeof _3
+export type _4 = typeof _4
+export type _5 = typeof _5
+export type _6 = typeof _6
+export type _7 = typeof _7
+export type _8 = typeof _8
 
-type PH_LIST = [ _1, _2, _3, _4 ]
-const PH_LIST = [ _1, _2, _3, _4 ]
+type PH_LIST = [ _1, _2, _3, _4, _5, _6, _7, _8 ]
+const PH_LIST = [ _1, _2, _3, _4, _5, _6, _7, _8 ]
 
 
 type PH_UNION = ToUnion<PH_LIST>
@@ -58,7 +66,7 @@ type SortedZipFuncPH<FuncArgs extends any[], Args extends any[], PhList extends 
         PhList
     >  
 
-type PartialUnboundArgsType<FuncArgs extends any[], Args extends any[], PhList extends any[]> =
+type PartialFreeArgsType<FuncArgs extends any[], Args extends any[], PhList extends any[]> =
     Unzip2nd<
         SortedZipFuncPH<
             FuncArgs,Args,PhList
@@ -75,8 +83,8 @@ type PartialBindingArgsType<Func extends (...args:any[])=>any, PhUnion> =
 export type PartialBindingType<Func extends (...args:any[])=>any> = PartialBindingArgsType<Func, PH_UNION> extends infer X1 ? Cast<X1,any[]> : never
 
 
-export type UnboundArgs<Func extends (...args:any[])=>any, Args extends any[]> =
-    PartialUnboundArgsType<
+export type FreeArgs<Func extends (...args:any[])=>any, Args extends any[]> =
+    PartialFreeArgsType<
         ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never,
         Args,
         PH_LIST
@@ -119,35 +127,35 @@ export type PHArg<Func extends (...args:any[])=>any, N extends number> = Argumen
  * @param bindingArgs  binding args except place holders like _1, _2, _3 ...
  */
 export function partial<Func extends (...args:any[])=>any>
-    (func:Func):(...args:UnboundArgs<Func,[]>)=>ReturnType<Func>
+    (func:Func):(...args:FreeArgs<Func,[]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>>
-    (func:Func, a1:A1):(...args:UnboundArgs<Func,[A1]>)=>ReturnType<Func>
+    (func:Func, a1:A1):(...args:FreeArgs<Func,[A1]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>>
-    (func:Func, a1:A1, a2:A2):(...args:UnboundArgs<Func,[A1,A2]>)=>ReturnType<Func>
+    (func:Func, a1:A1, a2:A2):(...args:FreeArgs<Func,[A1,A2]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>>
-    (func:Func, a1:A1, a2:A2, a3:A3):(...args:UnboundArgs<Func,[A1,A2,A3]>)=>ReturnType<Func>
+    (func:Func, a1:A1, a2:A2, a3:A3):(...args:FreeArgs<Func,[A1,A2,A3]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>>
-    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4):(...args:UnboundArgs<Func,[A1,A2,A3,A4]>)=>ReturnType<Func>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4):(...args:FreeArgs<Func,[A1,A2,A3,A4]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
     A5 extends PHArg<Func,4>>
-    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5]>)=>ReturnType<Func>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5):(...args:FreeArgs<Func,[A1,A2,A3,A4,A5]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
     A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>>
-    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5,A6]>)=>ReturnType<Func>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6):(...args:FreeArgs<Func,[A1,A2,A3,A4,A5,A6]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
     A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>, A7 extends PHArg<Func,6>>
-    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5,A6,A7]>)=>ReturnType<Func>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7):(...args:FreeArgs<Func,[A1,A2,A3,A4,A5,A6,A7]>)=>ReturnType<Func>
 export function partial<Func extends (...args:any[])=>any,
     A1 extends PHArg<Func,0>, A2 extends PHArg<Func,1>, A3 extends PHArg<Func,2>, A4 extends PHArg<Func,3>,
     A5 extends PHArg<Func,4>, A6 extends PHArg<Func,5>, A7 extends PHArg<Func,6>, A8 extends PHArg<Func,7> >
-    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7, a8:A8):(...args:UnboundArgs<Func,[A1,A2,A3,A4,A5,A6,A7,A8]>)=>ReturnType<Func>
+    (func:Func, a1:A1, a2:A2, a3:A3, a4:A4, a5:A5, a6:A6, a7:A7, a8:A8):(...args:FreeArgs<Func,[A1,A2,A3,A4,A5,A6,A7,A8]>)=>ReturnType<Func>
 
 
 export function partial <Func extends (...args:any[])=>any>(func:Func, ...bindingArgs:any[]):(...unboundArgs:any[])=>ReturnType<Func>    
@@ -172,9 +180,9 @@ type _X4 = typeof _X4
 type XPH_LIST = [ _X1, _X2, _X3, _X4 ]
 const XPH_LIST = [ _X1, _X2, _X3, _X4 ]
 
-export function partialX<Func extends (...args:any[])=>any, ArgsType extends PartialBindingArgsType<Func, PH_UNION|XPH_UNION>>(func:Func, ...bindingArgs:ArgsType):(...unboundArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>)=>(...unboundArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {
-    return function<UnboundArgs extends PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>> (...outerArgs:UnboundArgs):(...unboundArgs:PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {
-        return function<UnboundArgs extends PartialUnboundArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>> (...innerArgs:UnboundArgs):ReturnType<Func> {    
+export function partialX<Func extends (...args:any[])=>any, ArgsType extends PartialBindingArgsType<Func, PH_UNION|XPH_UNION>>(func:Func, ...bindingArgs:ArgsType):(...unboundArgs:PartialFreeArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>)=>(...unboundArgs:PartialFreeArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {
+    return function<UnboundArgs extends PartialFreeArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>> (...outerArgs:UnboundArgs):(...unboundArgs:PartialFreeArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {
+        return function<UnboundArgs extends PartialFreeArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>> (...innerArgs:UnboundArgs):ReturnType<Func> {    
             const args1:any[] = outerArgs
             const args2:any[] = innerArgs
             
@@ -183,3 +191,9 @@ export function partialX<Func extends (...args:any[])=>any, ArgsType extends Par
         }
     }
 }
+
+
+
+
+
+

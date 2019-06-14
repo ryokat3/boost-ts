@@ -1,5 +1,5 @@
 import * as chai from "chai"
-import { partial, _1, _2, _3, _4 } from "../src/partial"
+import { partial, _1, _2, _3, _4, _5, _6, _7, _8 } from "../src/partial"
 import { partialX, _X1, _X2, _X3, _X4 } from "../src/partial"
 
 
@@ -43,4 +43,6 @@ describe("boost-ts", ()=>{
         const mixedX = partialX(mixed, _2, _X2, true, _1, _X1)
         chai.assert.equal(mixedX(false, 5)("bound", false), "bound")
     })
+
+   
 })

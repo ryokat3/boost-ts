@@ -1,5 +1,5 @@
 import * as chai from "chai"
-import { readerable } from "../src/readerlib"
+import { readerable, readerify } from "../src/readerlib"
 import { _1, _2, _3, _4, _X1, _X2, _X3, _X4 } from "../src/partial"
 import { Reader } from "fp-ts/lib/Reader"
 
@@ -74,5 +74,11 @@ describe("readerlib", ()=>{
                 .chain((x:string)=>newReader(readerable(test, _1, x))).local(pickNum))
             .run([5, "end"])
         chai.assert.equal(result, "5, 5, 5, end, 5, 5, start")
-    })    
+    })  
+    
+    it("reading", ()=>{
+        const func1 = (a:number, b:string, c:boolean, d?:string, e?:number) => `${a}, ${b}, ${c}, ${d}, ${e}`
+        const func2 = readerify(func1, 5, _3, _2, _1, _4)
+        chai.assert.equal(func2(["hello", true, "bye", 5, undefined, undefined, undefined, undefined]), "5, bye, true, hello, 5")
+    }) 
 })

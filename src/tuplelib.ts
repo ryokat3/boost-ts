@@ -55,18 +55,17 @@ export type Select<T, Items extends any[], Result extends Array<any> = []> = {
     continue: Select<T, Pop<Items>, Push<Head<Items> extends T ? Head<Items> : None, Result>>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
-// Recursive free version (NOT WORK)
-export type _Select<T, Items extends any[], NO = never> = {
-    0: []
-    1: Items extends [ infer A ] ? [ A extends T ? A : NO ] : never
-    2: Items extends [ infer A, infer B ] ? [ A extends T ? A : NO, B extends T ? B : NO ] : never
-    3: Items extends [ infer A, infer B, infer C ] ? [ A extends T ? A : NO, B extends T ? B : NO, C extends T ? C : NO ] :never
-    4: Items extends [ infer A, infer B, infer C, infer D ] ? [ A extends T ? A : NO, B extends T ? B : NO, C extends T ? C : NO, D extends T ? D : NO ] : never
-    5: Items extends [ infer A, infer B, infer C, infer D, infer E ] ? [ A extends T ? A : NO, B extends T ? B : NO, C extends T ? C : NO, D extends T ? D : NO, E extends T ? E : NO ] : never 
-    6: Items extends [ infer A, infer B, infer C, infer D, infer E, infer F ] ? [ A extends T ? A : NO, B extends T ? B : NO, C extends T ? C : NO, D extends T ? D : NO, E extends T ? E : NO, F extends T ? F : NO ] : never
-    7: Items extends [ infer A, infer B, infer C, infer D, infer E, infer F, infer G ] ? [ A extends T ? A : NO, B extends T ? B : NO, C extends T ? C : NO, D extends T ? D : NO, E extends T ? E : NO, F extends T ? F : NO, G extends T ? G : NO ] : never
-    8: Items extends [ infer A, infer B, infer C, infer D, infer E, infer F, infer G, infer H ] ? [ A extends T ? A : NO, B extends T ? B : NO, C extends T ? C : NO, D extends T ? D : NO, E extends T ? E : NO, F extends T ? F : NO, G extends T ? G : NO, H extends T ? H : NO ] : never
-}[ Items['length'] extends 0|1|2|3|4|5|6|7|8  ? Items['length'] : never ]
+
+export type Select1st<T, Items extends any[], NotFound=never> = {
+    1: Items[0] extends T ? Items[0] : NotFound
+    2: Items[0] extends T ? Items[0] : Items[1] extends T ? Items[1] : NotFound
+    3: Items[0] extends T ? Items[0] : Items[1] extends T ? Items[1] : Items[2] extends T ? Items[2] : NotFound
+    4: Items[0] extends T ? Items[0] : Items[1] extends T ? Items[1] : Items[2] extends T ? Items[2] : Items[3] extends T ? Items[3] : NotFound
+    5: Items[0] extends T ? Items[0] : Items[1] extends T ? Items[1] : Items[2] extends T ? Items[2] : Items[3] extends T ? Items[3] : Items[4] extends T ? Items[4] : NotFound
+    6: Items[0] extends T ? Items[0] : Items[1] extends T ? Items[1] : Items[2] extends T ? Items[2] : Items[3] extends T ? Items[3] : Items[4] extends T ? Items[4] : Items[5] extends T ? Items[5] : NotFound
+    7: Items[0] extends T ? Items[0] : Items[1] extends T ? Items[1] : Items[2] extends T ? Items[2] : Items[3] extends T ? Items[3] : Items[4] extends T ? Items[4] : Items[5] extends T ? Items[5] : Items[6] extends T ? Items[6] : NotFound
+    8: Items[0] extends T ? Items[0] : Items[1] extends T ? Items[1] : Items[2] extends T ? Items[2] : Items[3] extends T ? Items[3] : Items[4] extends T ? Items[4] : Items[5] extends T ? Items[5] : Items[6] extends T ? Items[6] : Items[7] extends T ? Items[7] : NotFound
+}[ Items['length'] extends 1|2|3|4|5|6|7|8  ? Items['length'] : never ]
 
 
 export type FilterMask<T, Items extends any[], Result extends Array<any> = []> = {
@@ -123,18 +122,17 @@ export type _Unzip2nd<Zipped extends [any,any][], Result extends Array<any> = []
 }[ Length<Zipped> extends 0 ? "done" : "continue" ]
 
 // Recursive free version
-export type Unzip2nd<Items extends any[]> = {
+export type Unzip2nd<Items extends [any,any][]> = {
     0: []
-    1: Items extends [ [unknown, infer A] ] ? [ A ] : never
-    2: Items extends [ [unknown, infer A], [unknown, infer B] ]? [A, B] : never
-    3: Items extends [ [unknown, infer A], [unknown, infer B], [unknown, infer C] ]? [A, B, C] : never
-    4: Items extends [ [unknown, infer A], [unknown, infer B], [unknown, infer C], [unknown, infer D] ]? [A, B, C, D] : never
-    5: Items extends [ [unknown, infer A], [unknown, infer B], [unknown, infer C], [unknown, infer D], [unknown, infer E] ]? [A, B, C, D, E] : never
-    6: Items extends [ [unknown, infer A], [unknown, infer B], [unknown, infer C], [unknown, infer D], [unknown, infer E], [unknown, infer F] ]? [A, B, C, D, E, F] : never
-    7: Items extends [ [unknown, infer A], [unknown, infer B], [unknown, infer C], [unknown, infer D], [unknown, infer E], [unknown, infer F], [unknown, infer G] ]? [A, B, C, D, E, F, G] : never
-    8: Items extends [ [unknown, infer A], [unknown, infer B], [unknown, infer C], [unknown, infer D], [unknown, infer E], [unknown, infer F], [unknown, infer G], [unknown, infer H] ]? [A, B, C, D, E, F, G, H] : never
+    1: [ Items[0][1] ]
+    2: [ Items[0][1], Items[1][1] ]
+    3: [ Items[0][1], Items[1][1], Items[2][1] ]
+    4: [ Items[0][1], Items[1][1], Items[2][1], Items[3][1] ]
+    5: [ Items[0][1], Items[1][1], Items[2][1], Items[3][1], Items[4][1] ]
+    6: [ Items[0][1], Items[1][1], Items[2][1], Items[3][1], Items[4][1], Items[5][1] ]
+    7: [ Items[0][1], Items[1][1], Items[2][1], Items[3][1], Items[4][1], Items[5][1], Items[6][1] ]
+    8: [ Items[0][1], Items[1][1], Items[2][1], Items[3][1], Items[4][1], Items[5][1], Items[6][1], Items[7][1] ]
 }[ Items['length'] extends 0|1|2|3|4|5|6|7|8 ? Items['length'] : never ]
-
 
 type Top2<T, Items extends any[]> = Items extends [infer A, infer B]
     ? B extends T ? [B, A]
@@ -210,12 +208,12 @@ export type _Top<T, Items extends any[], TopItem = None, Result extends Array<an
     continue: TopItem extends T ? _Top<T, Pop<Items>, TopItem, Push<Head<Items>, Result> extends infer X2 ? Cast<X2,any[]> : never> : Head<Items> extends T ? _Top<T, Pop<Items>, Head<Items>, Result> : _Top<T, Pop<Items>, TopItem, Push<Head<Items>, Result> extends infer X4 ? Cast<X4,any[]> : never>        
 }[ Length<Items> extends 0 ? "done" : "continue" ]
 
-export type _MapUnion<T, Items extends any[], Result extends Array<any> = []> = {
+export type MapUnion<T, Items extends any[], Result extends Array<any> = []> = {
     done: Reverse<Result>    
-    continue: _MapUnion<T, Pop<Items>, Push<Head<Items>|T, Result>>
+    continue: MapUnion<T, Pop<Items>, Push<Head<Items>|T, Result>>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
-export type MapUnion<T, Items extends any[]> = {
+export type _MapUnion<T, Items extends any[]> = {
     0: []
     1: Items extends [ infer A ] ? [ A|T ] : never
     2: Items extends [ infer A, infer B ] ? [ A|T, B|T ] : never
@@ -232,10 +230,29 @@ export type MapNonNullable<Items extends any[], Result extends Array<any> = []> 
     continue: MapNonNullable<Pop<Items>, Push<NonNullable<Head<Items>>, Result> extends infer X1 ? Cast<X1,any[]> : never>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
-export type ToUnion<Items extends any[], Result = never> = {
+export type _ToUnion<Items extends any[], Result = never> = {
     done: Result
-    continue: ToUnion<Pop<Items> extends infer X1 ? Cast<X1,any[]> : never, Result | Head<Items>>
+    continue: _ToUnion<Pop<Items> extends infer X1 ? Cast<X1,any[]> : never, Result | Head<Items>>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
+export type ToUnion<Items extends any[]> = {
+    1: Items[0]    
+    2: Items[0] | Items[1]
+    3: Items[0] | Items[1] | Items[2]
+    4: Items[0] | Items[1] | Items[2] | Items[3]
+    5: Items[0] | Items[1] | Items[2] | Items[3] | Items[4]
+    6: Items[0] | Items[1] | Items[2] | Items[3] | Items[4] | Items[5]
+    7: Items[0] | Items[1] | Items[2] | Items[3] | Items[4] | Items[5] | Items[6]
+    8: Items[0] | Items[1] | Items[2] | Items[3] | Items[4] | Items[5] | Items[6] | Items[7]
+}[ Items['length'] extends 1|2|3|4|5|6|7|8  ? Items['length'] : never ]
 
-
+export type SelectToUnion<T, Items extends any[]> = {
+    1: (Items[0] extends T ? Items[0] : never)
+    2: (Items[0] extends T ? Items[0] : never) | (Items[1] extends T ? Items[1] : never)
+    3: (Items[0] extends T ? Items[0] : never) | (Items[1] extends T ? Items[1] : never) | (Items[2] extends T ? Items[2] : never)
+    4: (Items[0] extends T ? Items[0] : never) | (Items[1] extends T ? Items[1] : never) | (Items[2] extends T ? Items[2] : never) | (Items[3] extends T ? Items[3] : never)
+    5: (Items[0] extends T ? Items[0] : never) | (Items[1] extends T ? Items[1] : never) | (Items[2] extends T ? Items[2] : never) | (Items[3] extends T ? Items[3] : never) | (Items[4] extends T ? Items[4] : never)
+    6: (Items[0] extends T ? Items[0] : never) | (Items[1] extends T ? Items[1] : never) | (Items[2] extends T ? Items[2] : never) | (Items[3] extends T ? Items[3] : never) | (Items[4] extends T ? Items[4] : never) | (Items[5] extends T ? Items[5] : never)
+    7: (Items[0] extends T ? Items[0] : never) | (Items[1] extends T ? Items[1] : never) | (Items[2] extends T ? Items[2] : never) | (Items[3] extends T ? Items[3] : never) | (Items[4] extends T ? Items[4] : never) | (Items[5] extends T ? Items[5] : never) | (Items[6] extends T ? Items[6] : never)
+    8: (Items[0] extends T ? Items[0] : never) | (Items[1] extends T ? Items[1] : never) | (Items[2] extends T ? Items[2] : never) | (Items[3] extends T ? Items[3] : never) | (Items[4] extends T ? Items[4] : never) | (Items[5] extends T ? Items[5] : never) | (Items[6] extends T ? Items[6] : never) | (Items[7] extends T ? Items[7] : never)
+}[ Items['length'] extends 1|2|3|4|5|6|7|8  ? Items['length'] : never ]

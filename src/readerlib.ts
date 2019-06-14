@@ -1,6 +1,6 @@
-import { partial, getNumberOfPlaceHolder, PHArg, UnboundArgs, _1, _2, _3, _4 } from "./partial"
+import { PartialBindingType, partial, getNumberOfPlaceHolder, PHArg, FreeArgs, _1, _2, _3, _4, _5, _6, _7, _8 } from "./partial"
 import { ArgumentsType } from "./functionlib"
-import { Length, Cast } from "./tuplelib"
+import { Length, Cast, Select1st, Unzip2nd, Zip } from "./tuplelib"
 import { Comp } from "./numberlib"
 
 export type GetArgsTupledType<Func extends (...args:any[])=>any> = {
@@ -34,9 +34,9 @@ type DespreadFuncType<Args extends any[], R> = {
 
 
 
-type ReaderableFuncType<Func extends (...args:any[])=>any, Args extends any[]> = DespreadFuncType<UnboundArgs<Func, Args>, ReturnType<Func>>
+type ReaderableFuncType<Func extends (...args:any[])=>any, Args extends any[]> = DespreadFuncType<FreeArgs<Func, Args>, ReturnType<Func>>
 
-export type ReaderEnvType<Func extends (...args:any[])=>any, Args extends any[]> = TupledArgsType<UnboundArgs<Func, Args> extends infer T1 ? Cast<T1,any[]> : never>
+export type ReaderableEnvType<Func extends (...args:any[])=>any, Args extends any[]> = TupledArgsType<FreeArgs<Func, Args> extends infer T1 ? Cast<T1,any[]> : never>
 
 export type OverallEnv<Items extends any[]> = {
     0: []
@@ -95,3 +95,60 @@ export function readerable<Func extends (...args:any[])=>any>(func:Func, ...args
 export function readerable<Func extends (...args:any[])=>any>(func:Func, ...args:any[]):(a:any)=>ReturnType<Func> {    
     return getArgsTupled(partial(func, ...args), getNumberOfPlaceHolder(args) >= 2)
 }
+
+////////////////////////////////////////////////////////////////
+/// Readering
+////////////////////////////////////////////////////////////////
+
+type PhMapper<ZippedItems extends [any, any][], Default=any> = Unzip2nd<[
+    Select1st<[_1, unknown], ZippedItems, [_1, Default]>,    
+    Select1st<[_2, unknown], ZippedItems, [_2, Default]>,
+    Select1st<[_3, unknown], ZippedItems, [_3, Default]>,
+    Select1st<[_4, unknown], ZippedItems, [_4, Default]>,
+    Select1st<[_5, unknown], ZippedItems, [_5, Default]>,
+    Select1st<[_6, unknown], ZippedItems, [_6, Default]>,
+    Select1st<[_7, unknown], ZippedItems, [_7, Default]>,
+    Select1st<[_8, unknown], ZippedItems, [_8, Default]>
+]>
+
+type ZippedArgs<Func extends (...args:any[])=>any, Args extends any[]> = Zip<Args, ArgumentsType<Func> extends infer X ? Cast<X, any[]> : never>
+export type ReaderifyEnvType<Func extends (...args:any[])=>any, Args extends any[]> = PhMapper<ZippedArgs<Func, Args> extends infer X ? Cast<X, [any,any][]> : never>
+
+export type ReaderifyRunType<T extends { [key:number]:any }> = [
+    T extends { 1:any } ? T[1] : undefined,
+    T extends { 2:any } ? T[2] : undefined,
+    T extends { 3:any } ? T[3] : undefined,
+    T extends { 4:any } ? T[4] : undefined,
+    T extends { 5:any } ? T[5] : undefined,
+    T extends { 6:any } ? T[6] : undefined,
+    T extends { 7:any } ? T[7] : undefined,
+    T extends { 8:any } ? T[8] : undefined
+]
+
+function toPhIndex(ph:any):number {
+    switch (ph) {
+        case _1: return 1
+        case _2: return 2
+        case _3: return 3
+        case _4: return 4
+        case _5: return 5
+        case _6: return 6
+        case _7: return 7
+        case _8: return 8
+        default: return -1
+    }
+}
+
+export function readerify<Func extends (...args:any[])=>any, Args extends PartialBindingType<Func> >(func:Func, ...bindingArgs:Args):(env:ReaderifyEnvType<Func,Args>)=>ReturnType<Func>
+export function readerify<Func extends (...args:any[])=>any, Args extends PartialBindingType<Func> >(func:Func, ...bindingArgs:Args):(env:ReaderifyEnvType<Func,Args>)=>ReturnType<Func> {    
+    return function (tupledArgs:any[]):ReturnType<Func> {        
+        return func.call(func, ...(bindingArgs as any[]).map((value:any)=> ((idx:number)=>(idx > 0) ? tupledArgs[idx - 1] : value)(toPhIndex(value))))
+    }   
+}
+
+export function readerifyRunArgs<RunArgs extends { [key:number]:any }>(args:RunArgs):ReaderifyRunType<RunArgs> {
+    return [ args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8] ]
+}
+
+// Re-export for users' convenience
+export { PartialBindingType as ReaderifyCallType, _1, _2, _3, _4, _5, _6, _7, _8 } from "./partial"
