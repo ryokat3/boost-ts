@@ -66,6 +66,15 @@ describe("fp-ts", ()=>{
         console.log(result.getOrElse("failed"))
     }) 
 
+    it("nullable argument", async ()=>{
+        const test = async (a:number, b?:number) => (b) ? a + b : a
+        const result = await readerifyTryCatch(test, _1).run(readerifyRunArgs({1:5}))
+        chai.assert.equal(result.getOrElse(0), 5)
+
+        const result2 = await readerifyTryCatch(test, _1, 10).run(readerifyRunArgs({1:5}))        
+        chai.assert.equal(result2.getOrElse(0), 15)
+    })    
+
     it("ReaderTaskEither object", async ()=>{             
         ask<{ 1:string, 2:number, 3:boolean }, string>()
         .chain(()=>tryCatch(async (n:{ 1:string, 2:number, 3:any })=>{return n}, ()=>"hehe"))  
