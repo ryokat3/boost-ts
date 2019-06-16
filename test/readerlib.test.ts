@@ -80,5 +80,5 @@ describe("readerlib", ()=>{
         const func1 = (a:number, b:string, c:boolean, d?:string, e?:number) => `${a}, ${b}, ${c}, ${d}, ${e}`
         const func2 = readerify(func1, 5, _3, _2, _1, _4)
         chai.assert.equal(func2(["hello", true, "bye", 5, undefined, undefined, undefined, undefined]), "5, bye, true, hello, 5")
-    }) 
+    })
 })

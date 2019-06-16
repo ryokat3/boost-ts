@@ -88,6 +88,18 @@ describe("fp-ts", ()=>{
         .run(["hello", 5, true, undefined ])
     }) 
 
+    it("", ()=>{
+        type ENV1 = {
+            msg: string
+        }
+        type ENV2 = {
+            msg: string
+            id : number    
+        }
+
+        ask<ENV2, void>().chain(()=>ask<ENV1, void>().local((e)=>e))
+
+    })  
 
 })
 
