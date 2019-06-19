@@ -1,6 +1,4 @@
 import { Top, Zip, Unzip2nd, Select, SelectMask, MapUnion, Cast, ToUnion } from "./tuplelib"
-import { ArgumentsType } from "./functionlib"
-
 
 /**
  * partial
@@ -77,47 +75,24 @@ type PartialFreeArgsType<FuncArgs extends any[], Args extends any[], PhList exte
 type PartialBindingArgsType<Func extends (...args:any[])=>any, PhUnion> =
     MapUnion<
         PhUnion,
-        ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never
+        Parameters<Func> extends infer X1 ? Cast<X1, any[]> : never
     > extends infer X2 ? Cast<X2, any[]> : never
 
 export type PartialBindingType<Func extends (...args:any[])=>any> = PartialBindingArgsType<Func, PH_UNION> extends infer X1 ? Cast<X1,any[]> : never
 
 
 export type FreeArgs<Func extends (...args:any[])=>any, Args extends any[]> =
-    PartialFreeArgsType<
-        ArgumentsType<Func> extends infer X1 ? Cast<X1, any[]> : never,
+    PartialFreeArgsType<        
+        Parameters<Func> extends infer X1 ? Cast<X1, any[]> : never,
         Args,
         PH_LIST
     > extends infer X2 ? Cast<X2, any[]> : never
-
-// Optimised version
-/*
-export type UnboundArgs<Func extends (...args:any[])=>any, Args extends any[]> =
-    Unzip2nd<
-        SortZipByPH<
-            Select<
-                [PH_UNION, unknown],
-                Zip<
-                    SelectMask<PH_UNION, Args> extends infer X4 ? Cast<X4,any[]> : never,
-                    ArgumentsType<Func> extends infer X1 ? Cast<X1,any[]> : never
-                > extends infer X2 ? Cast<X2,[any,any][]> : never
-            > extends infer X3 ? Cast<X3,[any,any][]> : never,
-            PH_LIST
-        > extends infer X5 ? Cast<X5,[any,any][]> : never
-    > extends infer X6 ? Cast<X6,any[]> : never
-*/
-
-// SortedZipFuncPH<ArgumentsType<Func>, Args, PH_LIST> extends infer X5 ? Cast<X5,any[][]>: never> extends infer X6 ? Cast<X6, any[]> : never 
-
-// type SortedZipFuncPH<FuncArgs extends any[], Args extends any[], PhList extends any[]> = SortZipByPH<SelectedZipFuncPH<FuncArgs, Args, ToUnion<PhList>> extends infer X4 ? Cast<X4,any[][]> : never, PhList>
-
-
 
 export function getNumberOfPlaceHolder(args:any[]):number {
     return args.reduce((acc:number, curr:any)=>(PH_LIST.indexOf(curr) >= 0) ? acc + 1 : acc, 0)
 }
 
-export type PHArg<Func extends (...args:any[])=>any, N extends number> = ArgumentsType<Func>[N] | PH_UNION
+export type PHArg<Func extends (...args:any[])=>any, N extends number> = Parameters<Func>[N] | PH_UNION
 
 /**
  * Partial function call
@@ -180,9 +155,9 @@ type _X4 = typeof _X4
 type XPH_LIST = [ _X1, _X2, _X3, _X4 ]
 const XPH_LIST = [ _X1, _X2, _X3, _X4 ]
 
-export function partialX<Func extends (...args:any[])=>any, ArgsType extends PartialBindingArgsType<Func, PH_UNION|XPH_UNION>>(func:Func, ...bindingArgs:ArgsType):(...unboundArgs:PartialFreeArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>)=>(...unboundArgs:PartialFreeArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {
-    return function<UnboundArgs extends PartialFreeArgsType<ArgumentsType<Func>, ArgsType, XPH_LIST>> (...outerArgs:UnboundArgs):(...unboundArgs:PartialFreeArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {
-        return function<UnboundArgs extends PartialFreeArgsType<ArgumentsType<Func>, ArgsType, PH_LIST>> (...innerArgs:UnboundArgs):ReturnType<Func> {    
+export function partialX<Func extends (...args:any[])=>any, ArgsType extends PartialBindingArgsType<Func, PH_UNION|XPH_UNION>>(func:Func, ...bindingArgs:ArgsType):(...unboundArgs:PartialFreeArgsType<Parameters<Func>, ArgsType, XPH_LIST>)=>(...unboundArgs:PartialFreeArgsType<Parameters<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {    
+    return function<UnboundArgs extends PartialFreeArgsType<Parameters<Func>, ArgsType, XPH_LIST>> (...outerArgs:UnboundArgs):(...unboundArgs:PartialFreeArgsType<Parameters<Func>, ArgsType, PH_LIST>)=>ReturnType<Func> {    
+        return function<UnboundArgs extends PartialFreeArgsType<Parameters<Func>, ArgsType, PH_LIST>> (...innerArgs:UnboundArgs):ReturnType<Func> {        
             const args1:any[] = outerArgs
             const args2:any[] = innerArgs
             
@@ -191,9 +166,3 @@ export function partialX<Func extends (...args:any[])=>any, ArgsType extends Par
         }
     }
 }
-
-
-
-
-
-

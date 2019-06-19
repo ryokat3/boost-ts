@@ -1,12 +1,11 @@
 import { PartialBindingType, partial, getNumberOfPlaceHolder, PHArg, FreeArgs, _1, _2, _3, _4, _5, _6, _7, _8 } from "./partial"
-import { ArgumentsType } from "./functionlib"
 import { Length, Cast, Select1st, Unzip2nd, Zip } from "./tuplelib"
 import { Comp } from "./numberlib"
 
 export type GetArgsTupledType<Func extends (...args:any[])=>any> = {
     nop: Func
-    tupled: (arg:ArgumentsType<Func>)=>ReturnType<Func>
-} [ Comp<Length<ArgumentsType<Func>>, 2> extends -1 ? "nop" : "tupled"]
+    tupled: (arg:Parameters<Func>)=>ReturnType<Func>
+} [ Comp<Length<Parameters<Func>>, 2> extends -1 ? "nop" : "tupled"]
 
 function getArgsTupled<Func extends (...args:any[])=>any>(func:Func, tupled:boolean):GetArgsTupledType<Func> {
     return ((args:any)=> {
@@ -111,7 +110,8 @@ type PhMapper<ZippedItems extends [any, any][], Default=any> = Unzip2nd<[
     Select1st<[_8, unknown], ZippedItems, [_8, Default]>
 ]>
 
-type ZippedArgs<Func extends (...args:any[])=>any, Args extends any[]> = Zip<Args, ArgumentsType<Func> extends infer X ? Cast<X, any[]> : never>
+// type ZippedArgs<Func extends (...args:any[])=>any, Args extends any[]> = Zip<Args, ArgumentsType<Func> extends infer X ? Cast<X, any[]> : never>
+type ZippedArgs<Func extends (...args:any[])=>any, Args extends any[]> = Zip<Args, Parameters<Func> extends infer X ? Cast<X, any[]> : never>
 export type ReaderifyEnvType<Func extends (...args:any[])=>any, Args extends any[]> = PhMapper<ZippedArgs<Func, Args> extends infer X ? Cast<X, [any,any][]> : never>
 
 export type ReaderifyRunType<T extends { [key:number]:any }> = [

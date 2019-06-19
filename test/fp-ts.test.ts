@@ -88,7 +88,7 @@ describe("fp-ts", ()=>{
         .run(["hello", 5, true, undefined ])
     }) 
 
-    it("", ()=>{
+    it("ReaderTaskEither object", ()=>{
         type ENV1 = {
             msg: string
         }
@@ -98,8 +98,6 @@ describe("fp-ts", ()=>{
         }
 
         ask<ENV2, void>().chain(()=>ask<ENV1, void>().local((e)=>e))
-
-    })  
-
+    })
 })
 

@@ -43,6 +43,4 @@ describe("boost-ts", ()=>{
         const mixedX = partialX(mixed, _2, _X2, true, _1, _X1)
         chai.assert.equal(mixedX(false, 5)("bound", false), "bound")
     })
-
-   
 })
