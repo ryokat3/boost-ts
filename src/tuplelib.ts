@@ -10,6 +10,11 @@ export type Cast<T,P> = T extends P ? T : never
 
 export type Length<T extends any[]> = T['length']
 
+/**
+ * Push
+ *  
+ * Push an element to array if it's not None
+ */
 export type Push<A, T extends Array<any>> = {
     nop: T
     push: ((a: A, ...b: T) => void) extends ((...a: infer I) => void) ? I : []
@@ -21,6 +26,11 @@ export type Head<T extends any[]> = Length<T> extends 0 ? None : T[0]
 
 export type Element<T extends any[], I extends number> = Length<T> extends 0 ? None : T[I]
 
+/**
+ * Reverse<any[]>
+ * 
+ * Reverse the order of array type
+ */
 export type Reverse<List extends any[]> = {
     0: []
     1: List
@@ -33,16 +43,31 @@ export type Reverse<List extends any[]> = {
     8: [List[7], List[6], List[5], List[4], List[3], List[2], List[1], List[0]]
 }[ List['length'] extends 0|1|2|3|4|5|6|7|8 ? List['length'] : never ]
 
+/**
+ * Filter<T, any[]>
+ * 
+ * Drop the elements of array if it is derived from type T
+ */
 export type Filter<T, Items extends any[], Result extends Array<any> = []> = {
     done: Reverse<Result>
     continue: Filter<T, Pop<Items>, Push<Head<Items> extends T ? None : Head<Items>, Result>>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
+/**
+ * Select<T, any[]>
+ * 
+ * Select the elements of array if it is derived from type T
+ */
 export type Select<T, Items extends any[], Result extends Array<any> = []> = {
     done: Reverse<Result>
     continue: Select<T, Pop<Items>, Push<Head<Items> extends T ? Head<Items> : None, Result>>
 }[ Length<Items> extends 0  ? "done" : "continue"]
 
+/**
+ * Select1st<T, any[]>
+ * 
+ * Select the 1st element of array which is derived from type T 
+ */
 export type Select1st<T, List extends any[], NotFound=never> = {
     1: List[0] extends T ? List[0] : NotFound
     2: List[0] extends T ? List[0] : List[1] extends T ? List[1] : NotFound
@@ -54,6 +79,11 @@ export type Select1st<T, List extends any[], NotFound=never> = {
     8: List[0] extends T ? List[0] : List[1] extends T ? List[1] : List[2] extends T ? List[2] : List[3] extends T ? List[3] : List[4] extends T ? List[4] : List[5] extends T ? List[5] : List[6] extends T ? List[6] : List[7] extends T ? List[7] : NotFound
 }[ List['length'] extends 1|2|3|4|5|6|7|8  ? List['length'] : never ]
 
+/**
+ * Filter<T, any[]>
+ * 
+ * Drop the elements of array if it is derived from type T
+ */
 export type FilterMask<T, Items extends any[], Result extends Array<any> = []> = {
     done: Reverse<Result>
     continue: FilterMask<T, Pop<Items>, Push<Head<Items> extends T ? Pad : Head<Items>, Result>>
@@ -150,6 +180,11 @@ type Top8<T, List extends any[]> = List extends [infer A, infer B, infer C, infe
     : List
     : never
 
+/**
+ * Top
+ * 
+ * Move the 1st element to the head of array if it extends type T
+ */    
 export type Top<T, Items extends any[]> = {
     0: Items
     1: Items

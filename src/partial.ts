@@ -4,7 +4,7 @@ import { Top, Zip, Unzip2nd, Select, SelectMask, MapUnion, Cast, ToUnion } from 
  * partial
  */
 
-// Place Hodlers 
+// Place Hodlers (=PH)
 export const _1 = Symbol("_1")
 export const _2 = Symbol("_2")
 export const _3 = Symbol("_3")
@@ -33,7 +33,6 @@ type XPH_UNION = ToUnion<XPH_LIST>
 type SortZipByPH<Items extends [any,any][], PhList extends any[]> = Top<[PhList[0], unknown],Top<[PhList[1], unknown],Top<[PhList[2], unknown], Top<[PhList[3], unknown], Items> extends infer X4 ? Cast<X4,[any,any][]> : never> extends infer X3 ? Cast<X3,[any,any][]> : never> extends infer X2 ? Cast<X2,[any,any][]> : never>
 
 type SelectMaskArgs<Args extends any[], PhUnion> = SelectMask<PhUnion, Args> extends infer X1 ? Cast<X1,any[]> : never
-
 
 type ZipFuncArgs<FuncArgs extends any[], Args extends any[], PhUnion> =
     Zip<
