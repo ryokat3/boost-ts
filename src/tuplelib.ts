@@ -15,16 +15,13 @@ export type Length<T extends any[]> = T['length']
  *  
  * Push an element to array if it's not None
  */
-export type Push<A, T extends Array<any>> = {
-    nop: T
-    push: ((a: A, ...b: T) => void) extends ((...a: infer I) => void) ? I : []
-}[ A extends None ? "nop" : "push" ]
+export type Push<T, List extends any[]> = T extends None ? List : ((a: T, ...b: List) => void) extends ((...a: infer Result) => void) ? Result : never
 
-export type Pop<T extends any[]> = Length<T> extends 0 ? [] : (((...b: T) => void) extends (a:any, ...b: infer I) => void ? I : [])
+export type Pop<List extends any[]> = Length<List> extends 0 ? [] : (((...b: List) => void) extends (a:any, ...b: infer I) => void ? I : [])
 
-export type Head<T extends any[]> = Length<T> extends 0 ? None : T[0]
+export type Head<List extends any[]> = Length<List> extends 0 ? None : List[0]
 
-export type Element<T extends any[], I extends number> = Length<T> extends 0 ? None : T[I]
+export type Element<List extends any[], I extends number> = Length<List> extends 0 ? None : List[I]
 
 /**
  * Reverse<any[]>
@@ -43,25 +40,52 @@ export type Reverse<List extends any[]> = {
     8: [List[7], List[6], List[5], List[4], List[3], List[2], List[1], List[0]]
 }[ List['length'] extends 0|1|2|3|4|5|6|7|8 ? List['length'] : never ]
 
-/**
- * Filter<T, any[]>
- * 
- * Drop the elements of array if it is derived from type T
- */
-export type Filter<T, Items extends any[], Result extends Array<any> = []> = {
-    done: Reverse<Result>
-    continue: Filter<T, Pop<Items>, Push<Head<Items> extends T ? None : Head<Items>, Result>>
-}[ Length<Items> extends 0  ? "done" : "continue"]
 
-/**
- * Select<T, any[]>
- * 
- * Select the elements of array if it is derived from type T
- */
-export type Select<T, Items extends any[], Result extends Array<any> = []> = {
-    done: Reverse<Result>
-    continue: Select<T, Pop<Items>, Push<Head<Items> extends T ? Head<Items> : None, Result>>
-}[ Length<Items> extends 0  ? "done" : "continue"]
+
+type Filter1<T, List extends any[]> = List[0] extends T  ? [] : List
+type Filter2<T, List extends any[]> = List[0] extends T ? Filter1<T, Pop<List>> : Push<List[0], Filter1<T, Pop<List>>>
+type Filter3<T, List extends any[]> = List[0] extends T ? Filter2<T, Pop<List>> : Push<List[0], Filter2<T, Pop<List>>>
+type Filter4<T, List extends any[]> = List[0] extends T ? Filter3<T, Pop<List>> : Push<List[0], Filter3<T, Pop<List>>>
+type Filter5<T, List extends any[]> = List[0] extends T ? Filter4<T, Pop<List>> : Push<List[0], Filter4<T, Pop<List>>>
+type Filter6<T, List extends any[]> = List[0] extends T ? Filter5<T, Pop<List>> : Push<List[0], Filter5<T, Pop<List>>>
+type Filter7<T, List extends any[]> = List[0] extends T ? Filter6<T, Pop<List>> : Push<List[0], Filter6<T, Pop<List>>>
+type Filter8<T, List extends any[]> = List[0] extends T ? Filter7<T, Pop<List>> : Push<List[0], Filter7<T, Pop<List>>>
+
+export type Filter<T, List extends any[]> = {
+    0: []
+    1: Filter1<T, List>
+    2: Filter2<T, List>
+    3: Filter3<T, List>
+    4: Filter4<T, List>
+    5: Filter5<T, List>
+    6: Filter6<T, List>
+    7: Filter7<T, List>
+    8: Filter8<T, List>
+}[ List['length'] extends 0|1|2|3|4|5|6|7|8 ? List['length'] : never]
+
+
+
+type Select1<T, List extends any[]> = List[0] extends T ? List : []
+type Select2<T, List extends any[]> = List[0] extends T ? Push<List[0], Select1<T, Pop<List>>> : Select1<T, Pop<List>> 
+type Select3<T, List extends any[]> = List[0] extends T ? Push<List[0], Select2<T, Pop<List>>> : Select2<T, Pop<List>>
+type Select4<T, List extends any[]> = List[0] extends T ? Push<List[0], Select3<T, Pop<List>>> : Select3<T, Pop<List>>
+type Select5<T, List extends any[]> = List[0] extends T ? Push<List[0], Select4<T, Pop<List>>> : Select4<T, Pop<List>>
+type Select6<T, List extends any[]> = List[0] extends T ? Push<List[0], Select5<T, Pop<List>>> : Select5<T, Pop<List>>
+type Select7<T, List extends any[]> = List[0] extends T ? Push<List[0], Select6<T, Pop<List>>> : Select6<T, Pop<List>>
+type Select8<T, List extends any[]> = List[0] extends T ? Push<List[0], Select7<T, Pop<List>>> : Select7<T, Pop<List>>
+
+export type Select<T, List extends any[]> = {
+    0: []
+    1: Select1<T, List>
+    2: Select2<T, List>
+    3: Select3<T, List>
+    4: Select4<T, List>
+    5: Select5<T, List>
+    6: Select6<T, List>
+    7: Select7<T, List>
+    8: Select8<T, List>
+}[ List['length'] extends 0|1|2|3|4|5|6|7|8 ? List['length'] : never]
+
 
 /**
  * Select1st<T, any[]>
@@ -79,16 +103,12 @@ export type Select1st<T, List extends any[], NotFound=never> = {
     8: List[0] extends T ? List[0] : List[1] extends T ? List[1] : List[2] extends T ? List[2] : List[3] extends T ? List[3] : List[4] extends T ? List[4] : List[5] extends T ? List[5] : List[6] extends T ? List[6] : List[7] extends T ? List[7] : NotFound
 }[ List['length'] extends 1|2|3|4|5|6|7|8  ? List['length'] : never ]
 
-/**
- * Filter<T, any[]>
- * 
- * Drop the elements of array if it is derived from type T
- */
-export type FilterMask<T, Items extends any[], Result extends Array<any> = []> = {
-    done: Reverse<Result>
-    continue: FilterMask<T, Pop<Items>, Push<Head<Items> extends T ? Pad : Head<Items>, Result>>
-}[ Length<Items> extends 0  ? "done" : "continue"]
 
+/**
+ * SelectMask
+ * 
+ * Replace elements by Pad if it doesn't extend T
+ */
 export type SelectMask<T, List extends any[]> = {
     0: []
     1: [ List[0] extends T ? List[0] : Pad ]
@@ -112,11 +132,6 @@ export type Zip<List1 extends any[], List2 extends any[]> = {
     7: [ [ List1[0], List2[0] ], [ List1[1], List2[1] ], [ List1[2], List2[2] ], [ List1[3], List2[3] ], [ List1[4], List2[4] ], [ List1[5], List2[5] ], [ List1[6], List2[6] ] ]
     8: [ [ List1[0], List2[0] ], [ List1[1], List2[1] ], [ List1[2], List2[2] ], [ List1[3], List2[3] ], [ List1[4], List2[4] ], [ List1[5], List2[5] ], [ List1[6], List2[6] ], [ List1[7], List2[7] ] ]
 }[ List1['length'] extends 0|1|2|3|4|5|6|7|8  ? List1['length'] : never ]    
-
-export type Unzip<Zipped extends [any,any][], Items1 extends Array<any> = [], Items2 extends Array<any> = []> = {
-    done: [Reverse<Items1>, Reverse<Items2>]
-    continue: Unzip<Pop<Zipped> extends infer X1 ? Cast<X1,[any,any][]> : never, Push<Zipped[0][0], Items1>, Push<Zipped[0][1], Items2>>
-}[ Length<Zipped> extends 0 ? "done" : "continue" ]
 
 export type Unzip2nd<List extends [any,any][]> = {
     0: []
@@ -209,10 +224,6 @@ export type MapUnion<T, List extends any[]> = {
     8: [ List[0]|T, List[1]|T, List[2]|T, List[3]|T, List[4]|T, List[5]|T, List[6]|T, List[7]|T ]
 }[ List['length'] extends 0|1|2|3|4|5|6|7|8  ? List['length'] : never ]
 
-export type MapNonNullable<Items extends any[], Result extends Array<any> = []> = {
-    done: Reverse<Result>
-    continue: MapNonNullable<Pop<Items>, Push<NonNullable<Head<Items>>, Result> extends infer X1 ? Cast<X1,any[]> : never>
-}[ Length<Items> extends 0  ? "done" : "continue"]
 
 export type ToUnion<List extends any[]> = {
     1: List[0]    

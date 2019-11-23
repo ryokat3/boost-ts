@@ -22,6 +22,39 @@ const reverse_sub = partial(sub, _2, _1)  // type :: (a:number, b:number)=>numbe
 console.log(reverse_sub(10, 100))         // output is 90
 ```
 
+## Function Bundle
+
+Supposed we have an interface for set of file operations.
+
+```TypeScript
+interface FileOper {
+    dirname: (config:Config) => string,
+    read: (config:Config, name:string) => string
+    write: (config:Config, name:string, content:string) => number
+}
+```
+
+And `Config` is a singleton, then we expect such interface with curried functions.
+
+```TypeScript
+interface CurriedFileOper {
+    dirname: () => string,
+    read: (name:string) => string
+    write: (name:string, content:string) => number
+}
+```
+
+In such cases, `bundle` is convenient.
+
+```TypeScript
+const fileOper:FileOper = {
+   dirname: ...
+   read: ...
+   write: ...    
+}
+const curriedFileOper:CurriedFileOper = bundle(config, fileOper)
+```
+
 
 ## Tuple Type Library
 
