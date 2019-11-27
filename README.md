@@ -8,7 +8,7 @@ TypeScript Library to boost functional programming
 
 This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
 
-```TypeScript
+```ts
 import { partial, _1, _2 } from "boost-ts/lib/funclib"
 
 function sub (a:number, b:number):number {
@@ -30,7 +30,7 @@ Type-safe map for object.
 
 By using `Object.entries()` and `reduce()`, we can implement a `map`-like fnction for Typescript objects. 
 
-```TypeScript
+```ts
 ////////////////////////////////////////////////////////////////
 /// Unexpected Case
 ////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ const unexpected = Object.entries(data).reduce((acc, [key, value])=>{
 
 We want the type `{ name: Box<string>, age: Box<number> }` in this case.
 
-```TypeScript
+```ts
 import { mkmapobj } from "boost-ts/lib/funclib"
 
 ////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ chai.assert.equal(dataBox.age.value, data.age)
 
 Supposed we have an interface for set of file operations,
 
-```TypeScript
+```ts
 // What we have
 
 interface FileOper {
@@ -102,7 +102,7 @@ interface FileOper {
 
 and `Config` is a singleton, then we expect such interface with curried functions.
 
-```TypeScript
+```ts
 // What we expect
 
 interface CurriedFileOper {
@@ -114,7 +114,7 @@ interface CurriedFileOper {
 
 In such cases, `bundle` is convenient.
 
-```TypeScript
+```ts
 import { bundle } from "boost-ts/lib/funclib"
 
 // 'bundle' curries bunch of functions
@@ -128,13 +128,16 @@ This library for Typescript types offers tuple type operation, like Push, Pop, F
 I hope we can avoid to add "as any" for the complicated type of Typescript functions with this library.
 As design policy, recursive type definition is avoided as much as possible because it sometimes causes a compile error when initiating types.
 
-Add `import { Push, Pop, Head, Tail } from "boost-ts/lib/typelib"`
+Add
+```ts
+import { Push, Pop, Head, Tail } from "boost-ts/lib/typelib"
+```
 
 ### Push
 
 Add a type to the head of type tuple.
 
-```TypeScript
+```ts
 // Target = [boolean, string, number]
 type Target = Push<boolean, [string, number]>
 ```
@@ -143,7 +146,7 @@ type Target = Push<boolean, [string, number]>
 
 Remove a type from the head of type tuple.
 
-```TypeScript
+```ts
 // Target = [string, number]
 type Target = Pop<[boolean, string, number]>
 ```
@@ -152,7 +155,7 @@ type Target = Pop<[boolean, string, number]>
 
 Get the head of type tuple.
 
-```TypeScript
+```ts
 // Target = boolean
 type Target = Head<[boolean, string, number]>
 ```
@@ -161,7 +164,7 @@ type Target = Head<[boolean, string, number]>
 
 Reverse the order of type tuple.
 
-```TypeScript
+```ts
 // Target = [number, string, boolean]
 type Target = Reverse<[boolean, string, number]>
 ```
@@ -170,7 +173,7 @@ type Target = Reverse<[boolean, string, number]>
 
 Filter a type from type tuple (incl. recursive call)
 
-```TypeScript
+```ts
 // Target = [boolean, number]
 type Target = Filter<string, [boolean, string, number]>
 ```
@@ -179,7 +182,7 @@ type Target = Filter<string, [boolean, string, number]>
 
 Select a type from type tuple (incl. recursive call)
 
-```TypeScript
+```ts
 // Target = [string, number]
 type Target = Select<string|number, [boolean, string, number]>
 ```
@@ -188,7 +191,7 @@ type Target = Select<string|number, [boolean, string, number]>
 
 Zip two type tuples.
 
-```TypeScript
+```ts
 // Target = [ [1, boolean], [2, string, [3, number] ]
 type Target = Zip<[1, 2, 3], [boolean, string, number]>
 ```
@@ -198,7 +201,7 @@ type Target = Zip<[1, 2, 3], [boolean, string, number]>
 
 Decrease a number type.
 
-```TypeScript
+```ts
 // Target = 3
 type Target = Decrease<4>
 ```
@@ -208,7 +211,7 @@ type Target = Decrease<4>
 
 Compare two number types.
 
-```TypeScript
+```ts
 // Target1 = -1
 type Target1 = Comp<1, 2>
 // Target2 = 0
