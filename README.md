@@ -9,7 +9,7 @@ TypeScript Library to boost functional programming
 This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
 
 ```TypeScript
-import { partial, _1, _2 } from "boost-ts/funclib"
+import { partial, _1, _2 } from "boost-ts/lib/funclib"
 
 function sub (a:number, b:number):number {
     return a - b
@@ -65,7 +65,7 @@ const unexpected = Object.entries(data).reduce((acc, [key, value])=>{
 We want the type `{ name: Box<string>, age: Box<number> }` in this case.
 
 ```TypeScript
-import { mkmapobj } from "boost-ts/funclib"
+import { mkmapobj } from "boost-ts/lib/funclib"
 
 ////////////////////////////////////////////////////////////////
 // Expected Case
@@ -115,7 +115,7 @@ interface CurriedFileOper {
 In such cases, `bundle` is convenient.
 
 ```TypeScript
-import { bundle } from "boost-ts/funclib"
+import { bundle } from "boost-ts/lib/funclib"
 
 // 'bundle' curries bunch of functions
 const curriedFileOper:CurriedFileOper = bundle(config, fileOper)
@@ -128,7 +128,7 @@ This library for Typescript types offers tuple type operation, like Push, Pop, F
 I hope we can avoid to add "as any" for the complicated type of Typescript functions with this library.
 As design policy, recursive type definition is avoided as much as possible because it sometimes causes a compile error when initiating types.
 
-Add `import { Push, Pop, Head, Tail } from "boost-ts/typelib"`
+Add `import { Push, Pop, Head, Tail } from "boost-ts/lib/typelib"`
 
 ### Push
 
