@@ -2,12 +2,14 @@
 TypeScript Library to boost functional programming
 
 
-## Partial Function Call
+## Function Library
+
+### partial
 
 This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
 
 ```TypeScript
-import { partial, _1, _2 } from "boost-ts/lib/partial"
+import { partial, _1, _2 } from "boost-ts/funclib"
 
 function sub (a:number, b:number):number {
     return a - b
@@ -22,11 +24,75 @@ const reverse_sub = partial(sub, _2, _1)  // type :: (a:number, b:number)=>numbe
 console.log(reverse_sub(10, 100))         // output is 90
 ```
 
-## Function Bundle
+### mkobjmap
 
-Supposed we have an interface for set of file operations.
+Type-safe map for object.
+
+By using `Object.entries()` and `reduce()`, we can implement a `map`-like fnction for Typescript objects. 
 
 ```TypeScript
+////////////////////////////////////////////////////////////////
+/// Unexpected Case
+////////////////////////////////////////////////////////////////
+
+type Box<T> = { value: T }
+
+function boxify<T>(t: T):Box<T> {
+    return { value: t }
+}
+        
+const data = {
+    name: "John",
+    age: 26
+}
+
+const unexpected = Object.entries(data).reduce((acc, [key, value])=>{
+    return {
+        ...acc,
+        [key]: boxify(value)    
+    }    
+}, {})
+
+// unexpected.name is ERROR!!
+//
+// Even with more typing, type will be like ...
+// {
+//     name: Box<number> | Box<string>
+//     age: Box<number> | Box<string>
+// }
+```
+
+We want the type `{ name: Box<string>, age: Box<number> }` in this case.
+
+```TypeScript
+import { mkmapobj } from "boost-ts/funclib"
+
+////////////////////////////////////////////////////////////////
+// Expected Case
+////////////////////////////////////////////////////////////////
+
+type BoxMapType<T> = { [P in keyof T]: [T[P], Box<T[P]>] }
+
+// To reuse 'mapobj', we can list all possible types as tuple
+type BoxKeyType = [string, number, boolean, string[], number[]]
+
+// Make 'map' type with Mapped Tuple Type, and apply
+const mapobj = mkmapobj<BoxMapType<BoxKeyType>>()
+
+// The dataBox type is `{ name: Box<string>, age: Box<number> }`
+const dataBox = mapobj(data, boxify)
+
+chai.assert.equal(dataBox.name.value, data.name) 
+chai.assert.equal(dataBox.age.value, data.age)
+```
+
+### bundle
+
+Supposed we have an interface for set of file operations,
+
+```TypeScript
+// What we have
+
 interface FileOper {
     dirname: (config:Config) => string,
     read: (config:Config, name:string) => string
@@ -34,9 +100,11 @@ interface FileOper {
 }
 ```
 
-And `Config` is a singleton, then we expect such interface with curried functions.
+and `Config` is a singleton, then we expect such interface with curried functions.
 
 ```TypeScript
+// What we expect
+
 interface CurriedFileOper {
     dirname: () => string,
     read: (name:string) => string
@@ -47,21 +115,20 @@ interface CurriedFileOper {
 In such cases, `bundle` is convenient.
 
 ```TypeScript
-const fileOper:FileOper = {
-   dirname: ...
-   read: ...
-   write: ...    
-}
+import { bundle } from "boost-ts/funclib"
+
+// 'bundle' curries bunch of functions
 const curriedFileOper:CurriedFileOper = bundle(config, fileOper)
 ```
 
+## Type Library
 
-## Tuple Type Library
+This library for Typescript types offers tuple type operation, like Push, Pop, Find, Select, Zip etc.
 
-This library for tuple type operation eliminates recursive calls as much as possible.
-It is because recursive calls for type operation sometimes trigger errors when initiating types.
-So it's safe to this library to avoid annoying type initiation errors.
+I hope we can avoid to add "as any" for the complicated type of Typescript functions with this library.
+As design policy, recursive type definition is avoided as much as possible because it sometimes causes a compile error when initiating types.
 
+Add `import { Push, Pop, Head, Tail } from "boost-ts/typelib"`
 
 ### Push
 
@@ -126,7 +193,6 @@ Zip two type tuples.
 type Target = Zip<[1, 2, 3], [boolean, string, number]>
 ```
 
-## Number Type Library
 
 ### Decrease
 

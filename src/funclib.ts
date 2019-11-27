@@ -1,4 +1,8 @@
-import { Top, Zip, Unzip2nd, Select, SelectMask, Cast, ToUnion } from "./tuplelib"
+import { Find, Pop, Top, Zip, Unzip, Select, SelectMask, Cast, ToUnion } from "./typelib"
+
+////////////////////////////////////////////////////////////////////////
+/// Partial
+////////////////////////////////////////////////////////////////////////
 
 // Suppress TS error
 //
@@ -69,11 +73,11 @@ type SortedZipFuncPH<FuncArgs extends any[], Args extends any[], PhList extends 
     >  
 
 type PartialFreeArgsType<FuncArgs extends any[], Args extends any[], PhList extends any[]> =
-    Unzip2nd<
+    Unzip<
         SortedZipFuncPH<
             FuncArgs,Args,PhList
         > extends infer XXX ? Cast<XXX,[any,any][]>: never
-    > extends infer XXXX ? Cast<XXXX, any[]> : never
+    >[1] extends infer XXXX ? Cast<XXXX, any[]> : never
 
 type FreeArgs<Func extends (...args:any[])=>any, Args extends any[]> =
     PartialFreeArgsType<        
@@ -129,4 +133,47 @@ export function partial<Func extends (...args:any[])=>any>(func:Func, ...binding
         const args:any[] = unboundArgs    
         return func.call(func, ...args.reduce((result:any[], arg:any, idx:number)=>result.map((x:any)=>(x === PH_LIST[idx] ? arg : x)), bindingArgs))
     }    
+}
+
+////////////////////////////////////////////////////////////////////////
+/// bundle
+////////////////////////////////////////////////////////////////////////
+
+
+export const bundle = <T, BundleType extends { [key:string]: (t:T, ...args:any[])=>any }>
+        (t:T, bundle:BundleType):{ [Key in keyof BundleType]: (...args:Pop<Parameters<BundleType[Key]>>)=>ReturnType<BundleType[Key]> } => {
+    return Object.entries(bundle).reduce((result, [name, func])=>{        
+        return {
+            ...result,
+            [name]: (...args:Pop<Parameters<typeof func>>)=>func(t, ...args)
+        }
+    }, {} as { [Key in keyof BundleType]: (...args:Pop<Parameters<BundleType[Key]>>)=>ReturnType<BundleType[Key]> })
+}
+
+////////////////////////////////////////////////////////////////////////
+/// mkobjmap
+////////////////////////////////////////////////////////////////////////
+
+type MapGet<T, MapType extends [unknown, unknown][]> = Find<[T, unknown], MapType>[1]
+type MapKey<MapType extends [unknown, unknown][]> = ToUnion<Unzip<MapType>[0]>
+type MapValue<MapType extends [unknown, unknown][]> = ToUnion<Unzip<MapType>[1]>
+
+
+/**
+ * Create a converter of object values
+ * 
+ * Convert values of string-indexed object in type-safe manner, e.g. { age:20, name:"charlie" }
+ */
+export function mkmapobj<MapType extends [unknown, unknown][]>() {
+    return <
+        Obj extends { [key: string]: MapKey<MapType> },
+        Conv extends (_: MapKey<MapType>) => MapValue<MapType>
+    >(obj: Obj, conv: Conv):{ [K in keyof Obj]: MapGet<Obj[K], MapType> } => {    
+        return Object.entries(obj).reduce((obj, [key, value]) => {            
+            return {
+                ...obj,
+                [key]: conv(value)
+            }            
+        }, {} as { [K in keyof Obj]: MapGet<Obj[keyof Obj], MapType> })        
+    }
 }

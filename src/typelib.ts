@@ -1,6 +1,8 @@
-/**
- *  Tuple
- */ 
+////////////////////////////////////////////////////////////////////////
+/// Tuple
+////////////////////////////////////////////////////////////////////////
+
+
 declare const None: unique symbol
 type None = typeof None
 declare const Pad: unique symbol
@@ -92,7 +94,7 @@ export type Select<T, List extends any[]> = {
  * 
  * Select the 1st element of array which is derived from type T 
  */
-export type Select1st<T, List extends any[], NotFound=never> = {
+export type Find<T, List extends any[], NotFound=never> = {
     1: List[0] extends T ? List[0] : NotFound
     2: List[0] extends T ? List[0] : List[1] extends T ? List[1] : NotFound
     3: List[0] extends T ? List[0] : List[1] extends T ? List[1] : List[2] extends T ? List[2] : NotFound
@@ -133,17 +135,18 @@ export type Zip<List1 extends any[], List2 extends any[]> = {
     8: [ [ List1[0], List2[0] ], [ List1[1], List2[1] ], [ List1[2], List2[2] ], [ List1[3], List2[3] ], [ List1[4], List2[4] ], [ List1[5], List2[5] ], [ List1[6], List2[6] ], [ List1[7], List2[7] ] ]
 }[ List1['length'] extends 0|1|2|3|4|5|6|7|8  ? List1['length'] : never ]    
 
-export type Unzip2nd<List extends [any,any][]> = {
-    0: []
-    1: [ List[0][1] ]
-    2: [ List[0][1], List[1][1] ]
-    3: [ List[0][1], List[1][1], List[2][1] ]
-    4: [ List[0][1], List[1][1], List[2][1], List[3][1] ]
-    5: [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1] ]
-    6: [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1], List[5][1] ]
-    7: [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1], List[5][1], List[6][1] ]
-    8: [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1], List[5][1], List[6][1], List[7][1] ]
+export type Unzip<List extends [any,any][]> = {
+    0: [ [], [] ]
+    1: [ [ List[0][0] ], [ List[0][1] ] ]
+    2: [ [ List[0][0], List[1][0] ], [ List[0][1], List[1][1] ] ]
+    3: [ [ List[0][0], List[1][0], List[2][0] ], [ List[0][1], List[1][1], List[2][1] ] ]
+    4: [ [ List[0][0], List[1][0], List[2][0], List[3][0] ], [ List[0][1], List[1][1], List[2][1], List[3][1] ] ]
+    5: [ [ List[0][0], List[1][0], List[2][0], List[3][0], List[4][0] ], [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1] ] ]
+    6: [ [ List[0][0], List[1][0], List[2][0], List[3][0], List[4][0], List[5][0] ], [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1], List[5][1] ] ]
+    7: [ [ List[0][0], List[1][0], List[2][0], List[3][0], List[4][0], List[5][0], List[6][0] ], [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1], List[5][1], List[6][1] ] ]
+    8: [ [ List[0][0], List[1][0], List[2][0], List[3][0], List[4][0], List[5][0], List[6][0], List[7][0] ], [ List[0][1], List[1][1], List[2][1], List[3][1], List[4][1], List[5][1], List[6][1], List[7][1] ] ]
 }[ List['length'] extends 0|1|2|3|4|5|6|7|8 ? List['length'] : never ]
+
 
 type Top2<T, List extends any[]> = List extends [infer A, infer B]
     ? B extends T ? [B, A]
@@ -246,3 +249,35 @@ export type SelectToUnion<T, List extends any[]> = {
     7: (List[0] extends T ? List[0] : never) | (List[1] extends T ? List[1] : never) | (List[2] extends T ? List[2] : never) | (List[3] extends T ? List[3] : never) | (List[4] extends T ? List[4] : never) | (List[5] extends T ? List[5] : never) | (List[6] extends T ? List[6] : never)
     8: (List[0] extends T ? List[0] : never) | (List[1] extends T ? List[1] : never) | (List[2] extends T ? List[2] : never) | (List[3] extends T ? List[3] : never) | (List[4] extends T ? List[4] : never) | (List[5] extends T ? List[5] : never) | (List[6] extends T ? List[6] : never) | (List[7] extends T ? List[7] : never)
 }[ List['length'] extends 1|2|3|4|5|6|7|8  ? List['length'] : never ]
+
+export type ToIntersect<List extends any[]> = {
+    1: List[0]    
+    2: List[0] & List[1]
+    3: List[0] & List[1] & List[2]
+    4: List[0] & List[1] & List[2] & List[3]
+    5: List[0] & List[1] & List[2] & List[3] & List[4]
+    6: List[0] & List[1] & List[2] & List[3] & List[4] & List[5]
+    7: List[0] & List[1] & List[2] & List[3] & List[4] & List[5] & List[6]
+    8: List[0] & List[1] & List[2] & List[3] & List[4] & List[5] & List[6] & List[7]
+}[ List['length'] extends 1|2|3|4|5|6|7|8  ? List['length'] : never ]
+
+
+////////////////////////////////////////////////////////////////////////
+/// Number
+////////////////////////////////////////////////////////////////////////
+
+type NumberToTuple<N extends number, Result extends Array<any> = []> = {
+    done: Result
+    continue: NumberToTuple<N, Push<1, Result>> extends infer X1 ? Cast<X1, 1[]> : never
+} [ Length<Result> extends N  ? "done" : "continue"]
+
+type CompLength<Items1 extends any[], Items2 extends any[]> = {
+    less: -1
+    equal: 0
+    great: 1
+    continue:  CompLength<Pop<Items1>, Pop<Items2>>
+}[ Length<Items1> extends Length<Items2> ? "equal" : Length<Items1> extends 0 ? "less" : Length<Items2> extends 0 ? "great" : "continue" ]
+
+export type Decrease<N extends number> = Length<Pop<NumberToTuple<N>>>
+
+export type Comp<Num1 extends number, Num2 extends number> = CompLength<NumberToTuple<Num1>, NumberToTuple<Num2>>
