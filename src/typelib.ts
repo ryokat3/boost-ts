@@ -281,3 +281,9 @@ type CompLength<Items1 extends any[], Items2 extends any[]> = {
 export type Decrease<N extends number> = Length<Pop<NumberToTuple<N>>>
 
 export type Comp<Num1 extends number, Num2 extends number> = CompLength<NumberToTuple<Num1>, NumberToTuple<Num2>>
+
+////////////////////////////////////////////////////////////////////////
+/// Union
+////////////////////////////////////////////////////////////////////////
+
+export type SeparateUnion<T, Union> = Union extends (T|infer Remain) ? (Remain extends T ? never : (T extends Remain ? never : Remain)) : never 
