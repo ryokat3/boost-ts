@@ -121,6 +121,41 @@ import { bundle } from "boost-ts/lib/funclib"
 const curriedFileOper:CurriedFileOper = bundle(config, fileOper)
 ```
 
+### objmerge
+
+Type-safe merge of key-value objects
+
+```ts
+const recordA = {
+    personal: {
+        name: "John",
+        age: "26"
+    }    
+}
+
+const recordB = {
+    personal: {
+        age: 26,
+        nationality: "American"
+    } 
+}
+
+const merged = objmerge(recordA, recordB)
+/*
+  The type of 'merged' is
+
+  {
+      personal: {
+          name: string,
+          age: number,
+          nationality: string
+      }
+  }
+
+*/
+
+```
+
 ## Type Library
 
 This library for Typescript types offers tuple type operation, like Push, Pop, Find, Select, Zip etc.

@@ -1,5 +1,5 @@
 import * as chai from "chai"
-import { partial, _1, _2, _3, _4, _5, _6, _7, _8, bundle, mkmapobj } from "../src/funclib"
+import { partial, _1, _2, _3, _4, _5, _6, _7, _8, bundle, mkmapobj, mergeobj } from "../src/funclib"
 
 
 describe("funclib", ()=>{
@@ -81,5 +81,38 @@ describe("funclib", ()=>{
 
         chai.assert.equal(dataBox.name.value, data.name) 
         chai.assert.equal(dataBox.age.value, data.age)
+    })
+
+    it("mergeobj new value", () => {
+        const result = mergeobj( { a: 1, b: 3 }, { a: 2 })
+        chai.assert.equal(result.a, 2)
+    })
+
+    it("mergeobj new key", () => {
+        const result = mergeobj( { a: { b: 3 } }, { a: { c: 2 } })        
+        chai.assert.equal(result.a.b, 3)
+        chai.assert.equal(result.a.c, 2)
+        
+    })
+    
+    it("mergeobj README example", ()=>{
+        const recordA = {
+            personal: {
+                name: "John",
+                age: "26"
+            }    
+        }
+        
+        const recordB = {
+            personal: {
+                age: 26,
+                nationality: "American"
+            } 
+        }
+        
+        const merged = mergeobj(recordA, recordB)
+        chai.assert.equal(merged.personal.age, 26)   
+        chai.assert.equal(merged.personal.name, "John")   
+        chai.assert.equal(merged.personal.nationality, "American")   
     })
 })

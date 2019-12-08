@@ -177,3 +177,33 @@ export function mkmapobj<MapType extends [unknown, unknown][]>() {
         }, {} as { [K in keyof Obj]: MapGet<Obj[keyof Obj], MapType> })        
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////
+/// mergeobj
+////////////////////////////////////////////////////////////////////////
+type RecordType<K extends string | number | symbol> = Record<K, any>
+
+type MergeType<K extends string | number | symbol, A extends RecordType<K>, B extends RecordType<K>> =
+    { [ Key in Extract<keyof A, keyof B>]: A[Key] extends RecordType<K> ? B[Key] extends RecordType<K> ? MergeType<K, A[Key], B[Key]> : B[Key] : B[Key] } &
+    { [ Key in Exclude<keyof A, keyof B>]: A[Key] } &
+    { [ Key in Exclude<keyof B, keyof A>]: B[Key] }
+
+function isRecordType(target: unknown): target is RecordType<any> {
+    return (typeof(target) === "object") && (!Array.isArray(target))
+}
+
+export function mergeobj<K extends string | number | symbol, A extends RecordType<K>, B extends RecordType<K>>(main: A, delta: B): MergeType<K,A,B>
+export function mergeobj(main: RecordType<any>, delta: RecordType<any>): RecordType<any> {    
+    const updated = Object.entries(main).reduce((acc, [key, mval]) => {        
+        const dval = delta[key]
+        return {
+            ...acc,
+            [key]: (isRecordType(mval) && isRecordType(dval)) ? mergeobj(mval, dval) : (dval !== undefined) ? dval : mval
+        }
+    }, main)
+
+    return Object.entries(delta).reduce((acc, [key, dval]) => {
+        return (key in main) ? acc: { ...acc, [key]: dval }
+    }, updated)
+}
