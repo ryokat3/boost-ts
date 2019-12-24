@@ -147,7 +147,7 @@ export const bundle = <T, BundleType extends { [key:string]: (t:T, ...args:any[]
             ...result,
             [name]: (...args:Pop<Parameters<typeof func>>)=>func(t, ...args)
         }
-    }, {} as { [Key in keyof BundleType]: (...args:Pop<Parameters<BundleType[Key]>>)=>ReturnType<BundleType[Key]> })
+    }, Object.create(null))    
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -173,8 +173,8 @@ export function mkmapobj<MapType extends [unknown, unknown][]>() {
             return {
                 ...obj,
                 [key]: conv(value)
-            }            
-        }, {} as { [K in keyof Obj]: MapGet<Obj[keyof Obj], MapType> })        
+            }             
+        }, Object.create(null))
     }
 }
 

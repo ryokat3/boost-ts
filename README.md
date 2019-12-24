@@ -1,6 +1,21 @@
 # boost-ts
+
 TypeScript Library to boost functional programming
 
+This library includes useful generic types that operate TypeScript types, e.g. push/pop/zip for type tuples, and useful general type-safe functions that returns complicated types.
+
+
+- Function Library
+
+  - **partial** : type-safe partial parameter binding similar to C++ boost library
+  - **mkobjmap** : type-safe map function for key-value object
+  - **mergeobj** : type-safe recursive merge function for key-value object
+  - **bundle** : type-safe partial parameter binding for multiple functions
+
+
+- Type Library
+  - type tuple
+  - type map
 
 ## Function Library
 
@@ -121,7 +136,7 @@ import { bundle } from "boost-ts/lib/funclib"
 const curriedFileOper:CurriedFileOper = bundle(config, fileOper)
 ```
 
-### objmerge
+### mergeobj
 
 Type-safe merge of key-value objects
 
@@ -140,7 +155,7 @@ const recordB = {
     } 
 }
 
-const merged = objmerge(recordA, recordB)
+const merged = mergeobj(recordA, recordB)
 /*
   The type of 'merged' is
 
