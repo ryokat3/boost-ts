@@ -247,6 +247,53 @@ type Target = Zip<[1, 2, 3], [boolean, string, number]>
 ```
 
 
+### SelectObject
+
+Select properties from object type.
+
+```ts
+type Source = {
+    str1: string,
+    num1: number,
+    bool1: boolean,
+    str2: string,
+    num2: number
+    bool2: boolean
+}
+
+// Target = {
+//    str1: string,
+//    str2: string
+// }
+        
+type Target = SelectObject<Source, string>
+```
+
+
+### FilterObject
+
+Filter properties from object type.
+
+```ts
+type Source = {
+    str1: string,
+    num1: number,
+    bool1: boolean,
+    str2: string,
+    num2: number
+    bool2: boolean
+}
+
+// Target = {
+//    num1: number,
+//    num2: number,
+//    bool1: boolean,
+//    bool2: boolean
+// }
+        
+type Target = FilterObject<Source, string>
+```
+
 ### Decrease
 
 Decrease a number type.
