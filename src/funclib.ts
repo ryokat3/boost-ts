@@ -184,7 +184,7 @@ export function mkmapobj<MapType extends [unknown, unknown][]>() {
 ////////////////////////////////////////////////////////////////////////
 type RecordType<K extends string | number | symbol> = Record<K, any>
 
-type MergeType<K extends string | number | symbol, A extends RecordType<K>, B extends RecordType<K>> =
+export type MergeType<K extends string | number | symbol, A extends RecordType<K>, B extends RecordType<K>> =
     { [ Key in Extract<keyof A, keyof B>]: A[Key] extends RecordType<K> ? B[Key] extends RecordType<K> ? MergeType<K, A[Key], B[Key]> : B[Key] : B[Key] } &
     { [ Key in Exclude<keyof A, keyof B>]: A[Key] } &
     { [ Key in Exclude<keyof B, keyof A>]: B[Key] }

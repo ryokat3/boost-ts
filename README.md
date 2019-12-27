@@ -24,7 +24,7 @@ This library includes useful generic types that operate TypeScript types, e.g. p
 This library offers a partial function call with flexible argument binding. Of course, it's __type safe__.
 
 ```ts
-import { partial, _1, _2 } from "boost-ts/lib/funclib"
+import { partial, _1, _2 } from "boost-ts"
 
 function sub (a:number, b:number):number {
     return a - b
@@ -80,7 +80,7 @@ const unexpected = Object.entries(data).reduce((acc, [key, value])=>{
 We want the type `{ name: Box<string>, age: Box<number> }` in this case.
 
 ```ts
-import { mkmapobj } from "boost-ts/lib/funclib"
+import { mkmapobj } from "boost-ts"
 
 ////////////////////////////////////////////////////////////////
 // Expected Case
@@ -130,7 +130,7 @@ interface CurriedFileOper {
 In such cases, `bundle` is convenient.
 
 ```ts
-import { bundle } from "boost-ts/lib/funclib"
+import { bundle } from "boost-ts"
 
 // 'bundle' curries bunch of functions
 const curriedFileOper:CurriedFileOper = bundle(config, fileOper)
@@ -180,7 +180,7 @@ As design policy, recursive type definition is avoided as much as possible becau
 
 Add
 ```ts
-import { Push, Pop, Head, Tail } from "boost-ts/lib/typelib"
+import { Push, Pop, Head, Tail } from "boost-ts"
 ```
 
 ### Push

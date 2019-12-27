@@ -1,4 +1,2 @@
-import * as typelib from "./typelib"
-export { typelib }
-import * as funclib from "./funclib"
-export { funclib }
+export * from "./typelib"
+export * from "./funclib"
