@@ -17,8 +17,8 @@ describe("typelib", ()=>{
             num1: number,
             bool1: boolean,
             str2: string,
-            num2: number
-            bool2: boolean
+            num2: number,
+            bool2: boolean            
         }
 
         const expected = {
