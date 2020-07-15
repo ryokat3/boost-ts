@@ -145,7 +145,7 @@ const recordA = {
     personal: {
         name: "John",
         age: "26"
-    }    
+    }
 }
 
 const recordB = {
@@ -179,6 +179,7 @@ I hope we can avoid to add "as any" for the complicated type of Typescript funct
 As design policy, recursive type definition is avoided as much as possible because it sometimes causes a compile error when initiating types.
 
 Add
+
 ```ts
 import { Push, Pop, Head, Tail } from "boost-ts"
 ```
@@ -265,7 +266,7 @@ type Source = {
 //    str1: string,
 //    str2: string
 // }
-        
+
 type Target = SelectObject<Source, string>
 ```
 
@@ -290,7 +291,7 @@ type Source = {
 //    bool1: boolean,
 //    bool2: boolean
 // }
-        
+
 type Target = FilterObject<Source, string>
 ```
 
