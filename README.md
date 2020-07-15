@@ -4,14 +4,12 @@ TypeScript Library to boost functional programming
 
 This library includes useful generic types that operate TypeScript types, e.g. push/pop/zip for type tuples, and useful general type-safe functions that returns complicated types.
 
-
 - Function Library
 
   - **partial** : type-safe partial parameter binding similar to C++ boost library
   - **mkobjmap** : type-safe map function for key-value object
   - **mergeobj** : type-safe recursive merge function for key-value object
   - **bundle** : type-safe partial parameter binding for multiple functions
-
 
 - Type Library
   - type tuple
@@ -43,7 +41,7 @@ console.log(reverse_sub(10, 100))         // output is 90
 
 Type-safe map for object.
 
-By using `Object.entries()` and `reduce()`, we can implement a `map`-like fnction for Typescript objects. 
+By using `Object.entries()` and `reduce()`, we can implement a `map`-like fnction for Typescript objects.
 
 ```ts
 ////////////////////////////////////////////////////////////////
@@ -55,7 +53,7 @@ type Box<T> = { value: T }
 function boxify<T>(t: T):Box<T> {
     return { value: t }
 }
-        
+
 const data = {
     name: "John",
     age: 26
@@ -64,8 +62,8 @@ const data = {
 const unexpected = Object.entries(data).reduce((acc, [key, value])=>{
     return {
         ...acc,
-        [key]: boxify(value)    
-    }    
+        [key]: boxify(value)
+    }
 }, {})
 
 // unexpected.name is ERROR!!
@@ -97,7 +95,7 @@ const mapobj = mkmapobj<BoxMapType<BoxKeyType>>()
 // The dataBox type is `{ name: Box<string>, age: Box<number> }`
 const dataBox = mapobj(data, boxify)
 
-chai.assert.equal(dataBox.name.value, data.name) 
+chai.assert.equal(dataBox.name.value, data.name)
 chai.assert.equal(dataBox.age.value, data.age)
 ```
 
@@ -152,7 +150,7 @@ const recordB = {
     personal: {
         age: 26,
         nationality: "American"
-    } 
+    }
 }
 
 const merged = mergeobj(recordA, recordB)
@@ -247,7 +245,6 @@ Zip two type tuples.
 type Target = Zip<[1, 2, 3], [boolean, string, number]>
 ```
 
-
 ### SelectObject
 
 Select properties from object type.
@@ -269,7 +266,6 @@ type Source = {
 
 type Target = SelectObject<Source, string>
 ```
-
 
 ### FilterObject
 
@@ -304,7 +300,6 @@ Decrease a number type.
 type Target = Decrease<4>
 ```
 
-
 ### Comp
 
 Compare two number types.
@@ -318,10 +313,8 @@ type Target2 = Comp<2, 2>
 type Target3 = Comp<2, 1>
 ```
 
-
-
-
 ------
+
 - Some code of this library is based on [this stackoverflow article](https://stackoverflow.com/questions/54607400/typescript-remove-entries-from-tuple-type).
 - The API of partial function is inspired by [Boost C++ library](https://www.boost.org/)
 - Thanks to the blog [Suppress Error of type level programming of TypeScript](https://kgtkr.net/blog/2019/04/15/typescript-typelevelprogramming-error-suppression/en).
