@@ -1,5 +1,5 @@
 import * as chai from "chai"
-import { partial, _1, _2, _3, _4, _5, _6, _7, _8, bundle, mkmapobj, mergeobj } from "../src/funclib"
+import { partial, _1, _2, _3, _4, _5, _6, _7, _8, bundle, mkmapobj, mergeobj, rot2curry, rot3curry, rot4curry } from "../src/funclib"
 
 
 describe("funclib", ()=>{
@@ -115,4 +115,19 @@ describe("funclib", ()=>{
         chai.assert.equal(merged.personal.name, "John")   
         chai.assert.equal(merged.personal.nationality, "American")   
     })
+
+    it(("rot2curry"), ()=>{
+        const target = (s:string)=>(n:number)=>s.length + n
+        chai.assert.equal(rot2curry(target)(10)("hello"), target("hello")(10))
+    })
+    
+    it(("rot3curry"), ()=>{
+        const target = (s:string)=>(n:number)=>(b:boolean)=>s.length + n + ((b)?1:0)
+        chai.assert.equal(rot3curry(target)(true)("hello")(10), target("hello")(10)(true))
+    })
+        
+    it(("rot4curry"), ()=>{
+        const target = (s:string)=>(n:number)=>(b:boolean)=>(m:number)=>s.length + n + ((b)?1:0) + m
+        chai.assert.equal(rot4curry(target)(20)("hello")(10)(true), target("hello")(10)(true)(20))
+    }) 
 })

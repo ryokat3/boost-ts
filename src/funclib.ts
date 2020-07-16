@@ -207,3 +207,27 @@ export function mergeobj(main: RecordType<any>, delta: RecordType<any>): RecordT
         return (key in main) ? acc: { ...acc, [key]: dval }
     }, updated)
 }
+
+////////////////////////////////////////////////////////////////////////
+/// rot2curry
+////////////////////////////////////////////////////////////////////////
+export const rot2curry = <Func extends (...args1:any[])=>(...args2:any[])=>any>(func:Func):
+    (...args2:Parameters<ReturnType<Func>>) =>
+    (...args1:Parameters<Func>) =>
+    ReturnType<ReturnType<Func>> =>
+        (...args2)=>(...args1)=>func(...args1)(...args2)
+
+export const rot3curry = <Func extends (...args1:any[])=>(...args2:any[])=>(...arg3s:any[])=>any>(func:Func):
+    (...arg3:Parameters<ReturnType<ReturnType<Func>>>) =>
+    (...args1:Parameters<Func>) =>
+    (...args2:Parameters<ReturnType<Func>>) =>
+    ReturnType<ReturnType<ReturnType<Func>>> =>
+        (...args3)=>(...args1)=>(...args2)=>func(...args1)(...args2)(...args3)
+
+export const rot4curry = <Func extends (...args1:any[])=>(...args2:any[])=>(...args:any[])=>(...args4:any[])=>any>(func:Func):
+    (...arg4:Parameters<ReturnType<ReturnType<ReturnType<Func>>>>) =>
+    (...args1:Parameters<Func>) =>
+    (...args2:Parameters<ReturnType<Func>>) =>
+    (...args3:Parameters<ReturnType<ReturnType<Func>>>) =>
+    ReturnType<ReturnType<ReturnType<ReturnType<Func>>>> =>
+        (...args4)=>(...args1)=>(...args2)=>(...args3)=>func(...args1)(...args2)(...args3)(...args4)
