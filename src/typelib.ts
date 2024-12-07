@@ -26,6 +26,33 @@ export type Head<List extends any[]> = Length<List> extends 0 ? None : List[0]
 export type Element<List extends any[], I extends number> = Length<List> extends 0 ? None : List[I]
 
 /**
+ * Cdr<any[]>
+ * 
+ * Cdr of List
+ */
+/*
+export type Cdr<List extends any[]> = {
+    0: []
+    1: []
+    2: [ List[1] ]
+    3: [ List[1], List[2] ]
+    4: [ List[1], List[2], List[3] ]
+    5: [ List[1], List[2], List[3], List[4] ]
+    6: [ List[1], List[2], List[3], List[4], List[5] ]
+    7: [ List[1], List[2], List[3], List[4], List[5], List[6] ]
+    8: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7] ]
+    9: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8] ]
+    10: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8], List[9] ]
+    11: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8], List[9], List[10] ]
+    12: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8], List[9], List[10], List[11] ]
+    13: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8], List[9], List[10], List[11], List[12] ]
+    14: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8], List[9], List[10], List[11], List[12], List[13] ]
+    15: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8], List[9], List[10], List[11], List[12], List[13], List[14] ]
+    16: [ List[1], List[2], List[3], List[4], List[5], List[6], List[7], List[8], List[9], List[10], List[11], List[12], List[13], List[14], List[15] ]    
+}[ List['length'] extends 0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16  ? List['length'] : never ]
+*/
+
+/**
  * Reverse<any[]>
  * 
  * Reverse the order of array type
@@ -289,3 +316,44 @@ type CompLength<Items1 extends any[], Items2 extends any[]> = {
 export type Decrease<N extends number> = Length<Pop<NumberToTuple<N>>>
 
 export type Comp<Num1 extends number, Num2 extends number> = CompLength<NumberToTuple<Num1>, NumberToTuple<Num2>>
+
+////////////////////////////////////////////////////////////////////////
+/// Union To Tuple
+////////////////////////////////////////////////////////////////////////
+type Cofunc<T> = T extends any ? (x:T)=>void : never
+type Extends<T> = [T] extends [(x:infer X)=>void] ? X : never
+type PopUnion<U> = Extends<Extends<Cofunc<Cofunc<U>>>>
+type IsUnion<U> = [U] extends [Extends<Cofunc<Cofunc<U>>>] ? false : true
+
+export type UnionToList<U, List extends unknown[] = []> =
+    [U] extends [never] ? List :
+        IsUnion<U> extends true ? UnionToList<Exclude<U, PopUnion<U>>, [PopUnion<U>, ...List]> : [U, ...List]
+
+/*        
+export type ObjectToEntries<Object extends { [key:string|number|symbol]:any }, Keys extends (keyof Object)[] = [never], Entries extends unknown[] = []> = 
+    Keys extends [never] ? ObjectToEntries<Object, Cast<UnionToList<keyof Object>, (keyof Object)[]>, Entries> :
+        Length<Keys> extends 0 ? Entries :
+            ObjectToEntries<Object, Pop<Keys>, [[Keys[0], Object[Keys[0]]], ...Entries]>
+*/
+
+export type ObjectToEntries<T, Keys extends (keyof T)[] = [never], Entries extends unknown[] = []> = 
+    Keys extends [never] ? ObjectToEntries<T, Cast<UnionToList<keyof T>, (keyof T)[]>, Entries> :
+        Length<Keys> extends 0 ? Entries :
+            ObjectToEntries<T, Pop<Keys>, [[Keys[0], T[Keys[0]]], ...Entries]>
+
+/*
+export type EntriesToObject<Entries extends [string|number|symbol, unknown][], Object extends { [key:string|number|symbol]:unknown } = {}> = 
+    Length<Entries> extends 0 ? Object : EntriesToObject<Pop<Entries>, Record<Entries[0][0], Entries[0][1]> & Object>
+*/
+
+export type EntriesToObject<E extends [string|number|symbol, unknown][], T = {}> = 
+    Length<E> extends 0 ? T : EntriesToObject<Pop<E>, Record<E[0][0], E[0][1]> & T>
+
+export type PickValueType<E extends [string|number|symbol, unknown][], V, Picked extends [string|number|symbol, unknown][] = []> =
+    Length<E> extends 0 ? Picked : E[0][1] extends V ? PickValueType<Pop<E>, V, [E[0], ...Picked]> : PickValueType<Pop<E>, V, Picked>
+
+export type OmitValueType<E extends [string|number|symbol, unknown][], V, Picked extends [string|number|symbol, unknown][] = []> =
+    Length<E> extends 0 ? Picked : E[0][1] extends V ? OmitValueType<Pop<E>, V, Picked> : OmitValueType<Pop<E>, V, [E[0], ...Picked]>
+
+
+

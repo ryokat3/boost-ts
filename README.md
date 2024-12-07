@@ -2,7 +2,7 @@
 
 TypeScript Library to boost functional programming
 
-This library includes useful generic types that operate TypeScript types, e.g. push/pop/zip for type tuples, and useful general type-safe functions that returns complicated types.
+This library includes useful generic type functions working for TypeScript types (not value), e.g. push/pop/zip for type tuples, and useful general type-safe functions that returns complicated types.
 
 - Function Library
 
@@ -176,38 +176,44 @@ This library for Typescript types offers tuple type operation, like Push, Pop, F
 I hope we can avoid to add "as any" for the complicated type of Typescript functions with this library.
 As design policy, recursive type definition is avoided as much as possible because it sometimes causes a compile error when initiating types.
 
-Add
-
-```ts
-import { Push, Pop, Head, Tail } from "boost-ts"
-```
-
 ### Push
 
 Add a type to the head of type tuple.
 
 ```ts
-// Target = [boolean, string, number]
-type Target = Push<boolean, [string, number]>
+import { Push } from "boost-ts/typelib"
+
+type Target = Push<Date, [string, number]>
+// type Target = [Date, string, number]
 ```
+
+[Playground Link](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgBQK4GcAWcC+cBmUEIcARAEYQTowC0M6A9DAJ5gCmANsOaQFB9WHOABUAhlADm7eAF4UGTAB4AImJjsANHADaNKMAB2k7YdQhy7KAF0AfH0aM4Q9qInS5utRu36jJuDMLK2sgA)
+
 
 ### Pop
 
 Remove a type from the head of type tuple.
 
 ```ts
-// Target = [string, number]
-type Target = Pop<[boolean, string, number]>
+import { Pop } from "boost-ts/typelib"
+
+type Target = Pop<[Date, string, number]>
+// type Target = [string, number]
 ```
+[Playground Link](https://www.typescriptlang.org/play?ssl=4&ssc=34&pln=1&pc=1#code/JYWwDg9gTgLgBAbzgBQmOBfOAzKERwBEARhBAM4wC0M5A9DAJ5gCmANsMYQFDdOtwAKgEMoAcxbwAvCjQAeANoARYTBYAaOJSjAAdmM26AriGIsoAXQB83OnTj8WQ0ROlwF2vQbjHT5i0A)
 
 ### Head
 
 Get the head of type tuple.
 
 ```ts
-// Target = boolean
-type Target = Head<[boolean, string, number]>
+import { Head } from "boost-ts/typelib"
+
+type Target = Head<[Date, string, number]>
+// type Target = Date
 ```
+
+[Playground Link](https://www.typescriptlang.org/play?ssl=4&ssc=22&pln=1&pc=1#code/JYWwDg9gTgLgBAbzgCQKYEMAmcC+cBmUEIcARAEYQQDOMAtDNQPQwCeYqANsOaQFB82HOABV0UAOap4AXhQZMAHgDaAEXQxUAGji0owAHYSdBgK4hyqKAF0AfHyZM4Q1KPFTZcdZqA)
 
 ### Reverse
 

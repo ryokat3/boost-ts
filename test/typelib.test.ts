@@ -1,5 +1,6 @@
 import * as chai from "chai"
-import { Length, SelectObject ,FilterObject } from "../src/typelib"
+import { expectType, expectNotType } from "tsd"
+import { Length, SelectObject ,FilterObject, UnionToList } from "../src/typelib"
 
 describe("typelib", ()=>{
     it("Length", ()=>{
@@ -52,5 +53,18 @@ describe("typelib", ()=>{
         const value:FilterObject<Target, string> = expected
         
         chai.assert.equal(value, expected)  
-    }) 
+    })
+
+    it("UnionToList", ()=>{
+        const target = {
+            key1: "value1",
+            key2: "value2",            
+            key3: 3
+        }
+        const expected:UnionToList<keyof typeof target> = ["key1", "key2", "key3"]
+        
+
+        expectType<["key1", "key2", "key3"]>(expected)
+        expectNotType<["key2", "key3", "key1"]>(expected)        
+    })
 })
