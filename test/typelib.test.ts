@@ -3,6 +3,22 @@ import { IsAllTrue, Equals, NotEquals, Length, SelectObject ,FilterObject, Union
 
 
 describe("typelib", ()=>{
+
+    it("Equals, NotEquals", ()=>{
+        const result:IsAllTrue<[
+            NotEquals<any, true>,
+            NotEquals<true, unknown>,
+            NotEquals<any, unknown>,
+            NotEquals<any, never>,
+            NotEquals<any, null>,            
+            NotEquals<()=>any, ()=>null>,            
+            NotEquals<(x:any)=>void, (x:null)=>unknown>,                        
+            Equals<any, any>,            
+            Equals<unknown, unknown>,            
+        ]> = true
+
+        chai.assert.isTrue(result)        
+    })
     it("IsAllTrue", ()=>{
         
         const result:IsAllTrue<[
