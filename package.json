@@ -1,6 +1,6 @@
 {
   "name": "boost-ts",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "TypeScript Library to boost functional programming",
   "main": "index.js",
   "scripts": {
@@ -24,13 +24,12 @@
   },
   "homepage": "https://github.com/wak109/boost-ts#readme",
   "devDependencies": {
-    "@types/chai": "^4.3.5",
-    "@types/mocha": "^10.0.1",
-    "chai": "^4.3.7",
-    "mocha": "^10.2.0",
-    "shx": "^0.3.4",
-    "ts-node": "^10.9.1",
-    "tsd": "^0.28.1",
-    "typescript": "^5.0.4"
+    "@types/chai": "^5.2.1",
+    "@types/mocha": "^10.0.10",
+    "chai": "^5.2.0",
+    "mocha": "^11.1.0",
+    "shx": "^0.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

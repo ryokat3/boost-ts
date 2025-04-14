@@ -26,6 +26,22 @@ export type Head<List extends any[]> = Length<List> extends 0 ? None : List[0]
 export type Element<List extends any[], I extends number> = Length<List> extends 0 ? None : List[I]
 
 /**
+ * Equals
+ * 
+ * https://github.com/microsoft/TypeScript/issues/27024#issuecomment-421529650
+ */
+export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2) ? true : false
+export type NotEquals<X, Y> = Equals<X, Y> extends true ? false : true
+
+/**
+ * IsAllTrue
+ */
+
+
+export type IsAllTrue<List extends any[]> = Length<List> extends 0 ? true : Head<List> extends never ? false : Equals<Head<List>, any> extends true ? false : Head<List> extends true ? IsAllTrue<Pop<List>> : false
+
+
+/**
  * Cdr<any[]>
  * 
  * Cdr of List

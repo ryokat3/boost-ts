@@ -1,19 +1,37 @@
 import * as chai from "chai"
-import { expectType, expectNotType } from "tsd"
-import { Length, SelectObject ,FilterObject, UnionToList } from "../src/typelib"
+import { IsAllTrue, Equals, NotEquals, Length, SelectObject ,FilterObject, UnionToList } from "../src/typelib"
+
 
 describe("typelib", ()=>{
-    it("Length", ()=>{
-
-        type Len3 = Length<[number, boolean, string]>
+    it("IsAllTrue", ()=>{
         
-        const len3:Len3 = 3
+        const result:IsAllTrue<[
+            Equals<IsAllTrue<[true, true, true, true]>, true>,
+            Equals<IsAllTrue<[true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]>, true>,
+            Equals<IsAllTrue<[]>, true>,
+            Equals<IsAllTrue<[boolean]>, false>,
+            Equals<IsAllTrue<[false, true, true]>, false>,
+            Equals<IsAllTrue<[true, boolean, true]>, false>,
+            Equals<IsAllTrue<[true, true, never]>, false>,
+            Equals<IsAllTrue<[true, unknown, true]>, false>,
+            Equals<IsAllTrue<[true, any, true]>, false>
+        ]> = true
 
-        chai.assert.equal(len3, 3)        
+        chai.assert.isTrue(result)
+    })
+    it("Length", ()=>{        
+        
+        const result:IsAllTrue<[
+            Equals<Length<[number, boolean, string]>, 3>,
+            Equals<Length<[]>, 0>            
+        ]> = true
+        
+        chai.assert.isTrue(result)
     })
     
     it("SelectObject", ()=>{
-        type Target = {
+    
+        type Target1 = {
             str1: string,
             num1: number,
             bool1: boolean,
@@ -22,15 +40,14 @@ describe("typelib", ()=>{
             bool2: boolean            
         }
 
-        const expected = {
-            str1: "hello",
-            str2: "world"
-        }
+        const result:IsAllTrue<[
+            Equals<SelectObject<Target1, string>, { str1:string, str2:string}>,
+            Equals<SelectObject<Target1, number>, { num1:number, num2:number}>,
+            Equals<SelectObject<Target1, Date>, { }>
+        ]> = true
 
-        
-        const value:SelectObject<Target, string> = expected
-
-        chai.assert.equal(value, expected)        
+        chai.assert.isTrue(result)        
+     
     }) 
     
     it("FileterObject", ()=>{
@@ -43,28 +60,31 @@ describe("typelib", ()=>{
             bool2: boolean
         }
 
-        const expected = {
-            num1: 1,
-            num2: 2,
-            bool1: true,
-            bool2: false
+        type Expected = {
+            num1: number,
+            num2: number,
+            bool1: boolean,
+            bool2: boolean
         }
         
-        const value:FilterObject<Target, string> = expected
+        const result:IsAllTrue<[
+            Equals<FilterObject<Target, string>, Expected>
+        ]> = true        
         
-        chai.assert.equal(value, expected)  
+        chai.assert.isTrue(result)  
     })
 
     it("UnionToList", ()=>{
-        const target = {
-            key1: "value1",
-            key2: "value2",            
-            key3: 3
+        type Target = {
+            key1: String,
+            key2: string,            
+            key3: number
         }
-        const expected:UnionToList<keyof typeof target> = ["key1", "key2", "key3"]
+        const result:IsAllTrue<[
+            Equals<UnionToList<keyof Target>, ["key1", "key2", "key3"]>,
+            NotEquals<UnionToList<keyof Target>, ["key2", "key3", "key1"]>,
+        ]> = true
         
-
-        expectType<["key1", "key2", "key3"]>(expected)
-        expectNotType<["key2", "key3", "key1"]>(expected)        
+        chai.assert.isTrue(result)
     })
 })
