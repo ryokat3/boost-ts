@@ -4,6 +4,12 @@ TypeScript Library to boost functional programming
 
 This library includes useful generic type functions working for TypeScript types (not value), e.g. push/pop/zip for type tuples, and useful general type-safe functions that returns complicated types.
 
+<p align="center">
+  <a href="https://github.com/ryokat3/boost-ts">
+    <img src="https://github.com/ryokat3/boost-ts/actions/workflows/test.yml/badge.svg?branch=master" alt="test status" height="20">
+  </a>
+</p>
+
 - Function Library
 
   - **partial** : type-safe partial parameter binding similar to C++ boost library
