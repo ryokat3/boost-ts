@@ -4,7 +4,7 @@
 
 
 declare const None: unique symbol
-type None = typeof None
+export type None = typeof None
 declare const Pad: unique symbol
 type Pad = typeof Pad
 
@@ -25,6 +25,12 @@ export type Head<List extends any[]> = Length<List> extends 0 ? None : List[0]
 
 export type Element<List extends any[], I extends number> = Length<List> extends 0 ? None : List[I]
 
+export type Tail<List extends any[]> = Length<List> extends 0 ? None : Element<List, Decrease<Length<List>>>
+
+type UnshiftReverse<List extends any[], Result extends any[] = []> = Length<List> extends 0 ? Result : Length<List> extends 1 ? Result : UnshiftReverse<Pop<List>, Push<Head<List>, Result>>
+
+export type Unshift<List extends any[]> = Length<List> extends 0 ? [] : Length<List> extends 1 ? [] : Reverse<UnshiftReverse<List>>
+
 /**
  * Equals
  * 
@@ -36,8 +42,6 @@ export type NotEquals<X, Y> = Equals<X, Y> extends true ? false : true
 /**
  * IsAllTrue
  */
-
-
 export type IsAllTrue<List extends any[]> = Length<List> extends 0 ? true : Head<List> extends never ? false : Equals<Head<List>, any> extends true ? false : Head<List> extends true ? IsAllTrue<Pop<List>> : false
 
 
@@ -336,6 +340,7 @@ export type Comp<Num1 extends number, Num2 extends number> = CompLength<NumberTo
 ////////////////////////////////////////////////////////////////////////
 /// Union To Tuple
 ////////////////////////////////////////////////////////////////////////
+
 type Cofunc<T> = T extends any ? (x:T)=>void : never
 type Extends<T> = [T] extends [(x:infer X)=>void] ? X : never
 type PopUnion<U> = Extends<Extends<Cofunc<Cofunc<U>>>>
@@ -345,22 +350,10 @@ export type UnionToList<U, List extends unknown[] = []> =
     [U] extends [never] ? List :
         IsUnion<U> extends true ? UnionToList<Exclude<U, PopUnion<U>>, [PopUnion<U>, ...List]> : [U, ...List]
 
-/*        
-export type ObjectToEntries<Object extends { [key:string|number|symbol]:any }, Keys extends (keyof Object)[] = [never], Entries extends unknown[] = []> = 
-    Keys extends [never] ? ObjectToEntries<Object, Cast<UnionToList<keyof Object>, (keyof Object)[]>, Entries> :
-        Length<Keys> extends 0 ? Entries :
-            ObjectToEntries<Object, Pop<Keys>, [[Keys[0], Object[Keys[0]]], ...Entries]>
-*/
-
 export type ObjectToEntries<T, Keys extends (keyof T)[] = [never], Entries extends unknown[] = []> = 
     Keys extends [never] ? ObjectToEntries<T, Cast<UnionToList<keyof T>, (keyof T)[]>, Entries> :
         Length<Keys> extends 0 ? Entries :
             ObjectToEntries<T, Pop<Keys>, [[Keys[0], T[Keys[0]]], ...Entries]>
-
-/*
-export type EntriesToObject<Entries extends [string|number|symbol, unknown][], Object extends { [key:string|number|symbol]:unknown } = {}> = 
-    Length<Entries> extends 0 ? Object : EntriesToObject<Pop<Entries>, Record<Entries[0][0], Entries[0][1]> & Object>
-*/
 
 export type EntriesToObject<E extends [string|number|symbol, unknown][], T = {}> = 
     Length<E> extends 0 ? T : EntriesToObject<Pop<E>, Record<E[0][0], E[0][1]> & T>
@@ -372,4 +365,8 @@ export type OmitValueType<E extends [string|number|symbol, unknown][], V, Picked
     Length<E> extends 0 ? Picked : E[0][1] extends V ? OmitValueType<Pop<E>, V, Picked> : OmitValueType<Pop<E>, V, [E[0], ...Picked]>
 
 
+////////////////////////////////////////////////////////////////////////
+/// Data Path
+////////////////////////////////////////////////////////////////////////
 
+export type ListAppend<A extends any[], B extends any[]> = Length<A> extends 0 ? B : ListAppend<Unshift<A>, Push<Tail<A>, B>>

@@ -1,5 +1,5 @@
 import * as chai from "chai"
-import { IsAllTrue, Equals, NotEquals, Length, SelectObject ,FilterObject, UnionToList } from "../src/typelib"
+import { IsAllTrue, Equals, NotEquals, None, Length, Tail, Unshift, ListAppend, SelectObject ,FilterObject, UnionToList } from "../src/typelib"
 
 
 describe("typelib", ()=>{
@@ -44,6 +44,39 @@ describe("typelib", ()=>{
         
         chai.assert.isTrue(result)
     })
+    it("Tail", ()=>{
+
+        const result:IsAllTrue<[
+            Equals<Tail<[string, number]>, number>,
+            Equals<Tail<[string, number, "hello"]>, "hello">,
+            Equals<Tail<[]>, None>
+        ]> = true
+
+        chai.assert.isTrue(result)
+    })
+    it("Unshift", ()=>{
+
+        const result:IsAllTrue<[
+            Equals<Unshift<[string, number]>, [string]>,
+            Equals<Unshift<[string, "hello", number]>, [string, "hello"]>,
+            Equals<Unshift<[string]>, []>,
+            Equals<Unshift<[]>, []>,
+        ]> = true
+
+        chai.assert.isTrue(result)
+    })
+    it("ListAppend", ()=>{
+
+        const result:IsAllTrue<[
+            Equals<ListAppend<[string, number], [Date, "hello"]>, [string, number, Date, "hello"]>,
+            Equals<ListAppend<[string, number], [number]>, [string, number, number]>,
+            Equals<ListAppend<[string, number], []>, [string, number]>,
+            Equals<ListAppend<[], [Date, "hello"]>, [Date, "hello"]>,
+        ]> = true
+
+        chai.assert.isTrue(result)
+    })
+
     
     it("SelectObject", ()=>{
     

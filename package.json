@@ -17,12 +17,15 @@
     "typescript",
     "functional-programming"
   ],
-  "author": "wak109 <wak109@gmail.com> (https://github.com/wak109)",
+  "author": "ryokat3 <ryokat3@gmail.com> (https://github.com/ryokat3)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wak109/boost-ts/issues"
+    "url": "https://github.com/ryokat3/boost-ts/issues"
   },
-  "homepage": "https://github.com/wak109/boost-ts#readme",
+  "homepage": "https://github.com/ryokat3/boost-ts#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/chai": "^5.2.1",
     "@types/mocha": "^10.0.10",
