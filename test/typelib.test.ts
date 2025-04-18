@@ -1,5 +1,5 @@
 import * as chai from "chai"
-import { IsAllTrue, Equals, NotEquals, None, Length, Tail, Unshift, ListAppend, SelectObject ,FilterObject, UnionToList } from "../src/typelib"
+import { IsAllTrue, Equals, NotEquals, None, Length, Tail, Unshift, SelectObject ,FilterObject, UnionTail, UnionPop, UnionToList, KeyPathList } from "../src/typelib"
 
 
 describe("typelib", ()=>{
@@ -65,19 +65,6 @@ describe("typelib", ()=>{
 
         chai.assert.isTrue(result)
     })
-    it("ListAppend", ()=>{
-
-        const result:IsAllTrue<[
-            Equals<ListAppend<[string, number], [Date, "hello"]>, [string, number, Date, "hello"]>,
-            Equals<ListAppend<[string, number], [number]>, [string, number, number]>,
-            Equals<ListAppend<[string, number], []>, [string, number]>,
-            Equals<ListAppend<[], [Date, "hello"]>, [Date, "hello"]>,
-        ]> = true
-
-        chai.assert.isTrue(result)
-    })
-
-    
     it("SelectObject", ()=>{
     
         type Target1 = {
@@ -122,7 +109,26 @@ describe("typelib", ()=>{
         
         chai.assert.isTrue(result)  
     })
+    it("TailUnion", ()=>{
+        const result:IsAllTrue<[
+            Equals<UnionTail<string|number>, number>,
+            Equals<UnionTail<string>, string>,
+            Equals<UnionTail<boolean>, true>,
+            Equals<UnionTail<1|2|3|4>, 4>
+        ]> = true
+        
+        chai.assert.isTrue(result)
+    }),
+    it("UnionPop", ()=>{
+        const result:IsAllTrue<[
+            Equals<UnionPop<string|number>, string>,
+            Equals<UnionPop<string>, never>,
+            Equals<UnionPop<boolean>, false>,
+            Equals<UnionPop<1|2|3|4>, 1|2|3>
+        ]> = true        
 
+        chai.assert.isTrue(result)
+    }) 
     it("UnionToList", ()=>{
         type Target = {
             key1: String,
@@ -132,8 +138,21 @@ describe("typelib", ()=>{
         const result:IsAllTrue<[
             Equals<UnionToList<keyof Target>, ["key1", "key2", "key3"]>,
             NotEquals<UnionToList<keyof Target>, ["key2", "key3", "key1"]>,
+            Equals<UnionToList<keyof {}>, []>
         ]> = true
         
+        chai.assert.isTrue(result)
+    })
+    it("KeyPathList", ()=>{
+        type Target = { "key1": { "key2": string|number, "key3": number}, "key4": null}
+
+        const result:IsAllTrue<[            
+            Equals<KeyPathList<Target>[".key1.key2"], string|number>,
+            Equals<KeyPathList<Target>[".key1.key3"], number>,
+            Equals<KeyPathList<Target>[".key4"], null>,
+            Equals<Length<UnionToList<keyof KeyPathList<Target>>>, 3>
+        ]> = true
+                
         chai.assert.isTrue(result)
     })
 })

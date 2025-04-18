@@ -343,12 +343,14 @@ export type Comp<Num1 extends number, Num2 extends number> = CompLength<NumberTo
 
 type Cofunc<T> = T extends any ? (x:T)=>void : never
 type Extends<T> = [T] extends [(x:infer X)=>void] ? X : never
-type PopUnion<U> = Extends<Extends<Cofunc<Cofunc<U>>>>
+// export type UnionTail<U> = Cast<Extends<Extends<Cofunc<Cofunc<U>>>>, U>
+export type UnionTail<U> = Extends<Extends<Cofunc<Cofunc<U>>>>
+export type UnionPop<U> = Exclude<U, UnionTail<U>>
 type IsUnion<U> = [U] extends [Extends<Cofunc<Cofunc<U>>>] ? false : true
 
 export type UnionToList<U, List extends unknown[] = []> =
     [U] extends [never] ? List :
-        IsUnion<U> extends true ? UnionToList<Exclude<U, PopUnion<U>>, [PopUnion<U>, ...List]> : [U, ...List]
+        IsUnion<U> extends true ? UnionToList<Exclude<U, UnionTail<U>>, [UnionTail<U>, ...List]> : [U, ...List]
 
 export type ObjectToEntries<T, Keys extends (keyof T)[] = [never], Entries extends unknown[] = []> = 
     Keys extends [never] ? ObjectToEntries<T, Cast<UnionToList<keyof T>, (keyof T)[]>, Entries> :
@@ -364,9 +366,21 @@ export type PickValueType<E extends [string|number|symbol, unknown][], V, Picked
 export type OmitValueType<E extends [string|number|symbol, unknown][], V, Picked extends [string|number|symbol, unknown][] = []> =
     Length<E> extends 0 ? Picked : E[0][1] extends V ? OmitValueType<Pop<E>, V, Picked> : OmitValueType<Pop<E>, V, [E[0], ...Picked]>
 
-
 ////////////////////////////////////////////////////////////////////////
-/// Data Path
+/// KeyPathList
 ////////////////////////////////////////////////////////////////////////
 
-export type ListAppend<A extends any[], B extends any[]> = Length<A> extends 0 ? B : ListAppend<Unshift<A>, Push<Tail<A>, B>>
+type DataType = { [key:string]: string|number|boolean|null|DataType } 
+
+type AddKeyPath<A, B> = A extends string ? B extends string ? `${A}.${B}` : A : B extends string ? `.${B}` : ""
+type GetOneKey<T> = Cast<UnionTail<keyof T>, keyof T>
+
+export type KeyPathList<T, ParentKey extends string|null = null> =
+    T extends DataType ?
+        keyof T extends never ?
+            {} :
+            KeyPathList<T[GetOneKey<T>], AddKeyPath<ParentKey, GetOneKey<T>>> & KeyPathList<Omit<T, GetOneKey<T>>, ParentKey> :
+        ParentKey extends string ?
+            Record<ParentKey, T> :
+            {}
+
