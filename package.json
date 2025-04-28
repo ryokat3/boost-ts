@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wak109/boost-ts.git"
+    "url": "git+https://github.com/ryokat3/boost-ts.git"
   },
   "keywords": [
     "typescript",

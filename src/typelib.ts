@@ -370,17 +370,18 @@ export type OmitValueType<E extends [string|number|symbol, unknown][], V, Picked
 /// KeyPathList
 ////////////////////////////////////////////////////////////////////////
 
-type DataType = { [key:string]: string|number|boolean|null|DataType } 
-
 type AddKeyPath<A, B> = A extends string ? B extends string ? `${A}.${B}` : A : B extends string ? `.${B}` : ""
 type GetOneKey<T> = Cast<UnionTail<keyof T>, keyof T>
 
-export type KeyPathList<T, ParentKey extends string|null = null> =
-    T extends DataType ?
+type KeyPathDataType<ValueType> = { [key:string]: ValueType|KeyPathDataType<ValueType> } 
+
+export type KeyPathList<T, ValueType = string|number|boolean|null, ParentKey extends string|null = null> =
+    T extends KeyPathDataType<ValueType> ?
         keyof T extends never ?
             {} :
-            KeyPathList<T[GetOneKey<T>], AddKeyPath<ParentKey, GetOneKey<T>>> & KeyPathList<Omit<T, GetOneKey<T>>, ParentKey> :
+            KeyPathList<T[GetOneKey<T>], ValueType, AddKeyPath<ParentKey, GetOneKey<T>>> & KeyPathList<Omit<T, GetOneKey<T>>, ValueType, ParentKey> :
         ParentKey extends string ?
             Record<ParentKey, T> :
             {}
+
 
